@@ -1,0 +1,50 @@
+#!/usr/bin/env bash
+# Project-local Lean 4 toolchain environment for civ6-lean4.
+#
+# The official Lean 4.25.0 Linux release is unpacked under
+#   .tools/lean-4.25.0-linux
+# and is *not* installed into any Nix profile, /nix/store path, or ~/.elan.
+# This script only prepends that bin directory to PATH; nothing is downloaded.
+#
+# Usage:
+#   source scripts/lean-env          # activate in the current shell
+#   scripts/lean-env lake build      # run one command with the toolchain
+#   scripts/lean-env lean --version
+#   scripts/lean-env                 # print the resolved toolchain versions
+
+_lean_env_self="${BASH_SOURCE[0]:-$0}"
+_lean_env_root="$(cd "$(dirname "$_lean_env_self")/.." && pwd)"
+_lean_env_toolchain="$_lean_env_root/.tools/lean-4.25.0-linux"
+
+if [ ! -x "$_lean_env_toolchain/bin/lean" ] || [ ! -x "$_lean_env_toolchain/bin/lake" ]; then
+  echo "lean-env: missing toolchain at $_lean_env_toolchain" >&2
+  echo "lean-env: see research/TOOLCHAIN.md for the exact bootstrap commands" >&2
+  return 1 2>/dev/null || exit 1
+fi
+
+export PATH="$_lean_env_toolchain/bin:$PATH"
+# Do not let a stale environment leak into project builds.
+unset LEAN_PATH LEAN_SRC_PATH 2>/dev/null || true
+
+_lean_env_is_sourced=0
+if [ "${BASH_SOURCE[0]:-}" != "${0}" ]; then _lean_env_is_sourced=1; fi
+
+if [ "$#" -gt 0 ]; then
+  if [ "$_lean_env_is_sourced" -eq 1 ]; then
+    ( cd "$_lean_env_root" && "$@" )
+    _lean_env_status=$?
+    unset _lean_env_self _lean_env_root _lean_env_toolchain _lean_env_is_sourced
+    return "$_lean_env_status"
+  else
+    cd "$_lean_env_root" || exit 1
+    exec "$@"
+  fi
+fi
+
+# No arguments: report the resolved toolchain (safe both sourced and executed).
+echo "LEAN=$_lean_env_toolchain/bin/lean"
+echo "LAKE=$_lean_env_toolchain/bin/lake"
+"$_lean_env_toolchain/bin/lean" --version
+"$_lean_env_toolchain/bin/lake" --version
+
+unset _lean_env_self _lean_env_root _lean_env_toolchain _lean_env_is_sourced

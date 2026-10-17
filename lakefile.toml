@@ -1,0 +1,15 @@
+# Minimal Lake project for the Civ6 optimality-certificate work.
+# No external dependencies: core Lean + Std only (no Mathlib).
+# Toolchain is pinned by ./lean-toolchain (Lean 4.25.0), provisioned locally by
+# scripts/lean-env from .tools/lean-4.25.0-linux (see research/TOOLCHAIN.md).
+
+name = "civ6_lean4"
+version = "0.1.0"
+defaultTargets = ["civ6_lean4"]
+
+[[lean_lib]]
+name = "Civ6Verify"
+
+[[lean_exe]]
+name = "civ6_lean4"
+root = "Main"

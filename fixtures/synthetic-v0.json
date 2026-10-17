@@ -1,0 +1,315 @@
+{
+  "fixtureId": "synthetic-v0",
+  "version": 0,
+  "kind": "synthetic-benchmark",
+  "synthetic": true,
+  "civ6Model": false,
+  "disclaimer": "Fully synthetic. Growth thresholds, yields, settler cost and the round order are invented for proof-engineering. Nothing here is a Civilization VI formula, value, or optimum, and no claim about the real game follows from any number in this file.",
+  "purpose": "A tiny, exhaustive-state benchmark whose rules Lean can re-implement and decide for all t (pop<=2, food<=7, production<=7, done in {0,1} => at most 96 non-goal states).",
+  "timeModel": {
+    "tickSymbol": "t",
+    "initialTick": 0,
+    "tickSemantics": "one full settlement of all phases; state at t=k is after k settlements",
+    "goalTick": "first t with settlersCompleted >= 1"
+  },
+  "rules": {
+    "synthetic": true,
+    "civ6Model": false,
+    "popMin": 1,
+    "popMax": 2,
+    "foodPerCitizenPerTick": 2,
+    "tiles": [
+      {
+        "id": "farm",
+        "food": 3,
+        "production": 1
+      },
+      {
+        "id": "mine",
+        "food": 0,
+        "production": 2
+      }
+    ],
+    "tileComment": "farm = more food, less production; mine = more production, no food. Farms also yield 1 production on purpose, so that 'grow this tick and complete this tick' is reachable and the round order is observable.",
+    "growthThresholdByPop": {
+      "1": 4,
+      "2": 8
+    },
+    "growthThresholdFormula": "T(p) = 4*p for p in {1,2}; linear by design, NOT a Civ6 curve",
+    "foodFloor": 0,
+    "foodCapRule": "after the food phase food <= T(pop)-1; surplus at popMax is discarded",
+    "settler": {
+      "cost": 8,
+      "populationCost": 1,
+      "prereqPop": 2,
+      "productionProgressCap": 7,
+      "onCompleteFood": 0,
+      "onCompleteProduction": 0
+    },
+    "coverageModelling": {
+      "settlerProductionWhilePrereqUnmet": "progress capped at cost-1",
+      "noBuy": true,
+      "noQueueSwitch": true,
+      "noChop": true,
+      "noPolicy": true,
+      "noStarvation": "net food below zero floors food at 0, population never shrinks from hunger"
+    }
+  },
+  "roundOrder": [
+    "1. read the citizen assignment chosen for this tick (from the state at the start of the tick)",
+    "2. compute yields from the PRE-growth population: netFood = 3*nFarm + 0*nMine - 2*pop, gainedProduction = 1*nFarm + 2*nMine",
+    "3. food phase: food' = max(0, food + netFood)  (floor: no starvation, no pop loss)",
+    "4. growth phase: while pop < 2 and food' >= T(pop): food' -= T(pop); pop += 1; then if pop = 2: food' = min(food', T(2)-1 = 7)",
+    "5. production phase: raw = production + gainedProduction",
+    "6. prerequisite gate: if pop < 2, production' = min(raw, 7) and no completion is possible",
+    "7. completion: if pop >= 2 and raw >= 8: settlersCompleted += 1, pop -= 1, production' = 0, food' = 0"
+  ],
+  "growthThresholds": {
+    "1": 4,
+    "2": 8
+  },
+  "actionEnumeration": {
+    "definition": "A(p) = { (k, p-k) : 0 <= k <= p } for pop p, ordered by increasing k",
+    "cardinality": "p+1 for a non-goal state; 0 in goal states",
+    "totality": "every citizen works exactly one tile; two citizens may share a tile",
+    "excluded": [
+      "idle / unassigned citizens",
+      "gold or faith purchase",
+      "queue switch or alternate build items",
+      "chops, improvements, trade, barbarians",
+      "district/building/wonder/policy effects"
+    ],
+    "canonicalOrdering": "increasing citizens-on-farm, then mine count determined"
+  },
+  "initialState": {
+    "pop": 1,
+    "food": 0,
+    "production": 0,
+    "settlersCompleted": 0
+  },
+  "initialGoal": false,
+  "goal": {
+    "predicate": "settlersCompleted >= 1",
+    "requiresPopAtCompletion": 2,
+    "note": "terminal: goal states have no outgoing actions in the search"
+  },
+  "expected": {
+    "syntheticEarliestGoalTick": 5,
+    "witness": [
+      [
+        1,
+        0
+      ],
+      [
+        1,
+        0
+      ],
+      [
+        1,
+        0
+      ],
+      [
+        1,
+        0
+      ],
+      [
+        0,
+        2
+      ]
+    ],
+    "witnessStates": [
+      {
+        "pop": 1,
+        "food": 0,
+        "production": 0,
+        "settlersCompleted": 0
+      },
+      {
+        "pop": 1,
+        "food": 1,
+        "production": 1,
+        "settlersCompleted": 0
+      },
+      {
+        "pop": 1,
+        "food": 2,
+        "production": 2,
+        "settlersCompleted": 0
+      },
+      {
+        "pop": 1,
+        "food": 3,
+        "production": 3,
+        "settlersCompleted": 0
+      },
+      {
+        "pop": 2,
+        "food": 0,
+        "production": 4,
+        "settlersCompleted": 0
+      },
+      {
+        "pop": 1,
+        "food": 0,
+        "production": 0,
+        "settlersCompleted": 1
+      }
+    ],
+    "layerCounts": [
+      1,
+      2,
+      4,
+      6,
+      7,
+      7
+    ],
+    "layerDigests": [
+      "6f3078e295c37a2d",
+      "0ecc2157f5727424",
+      "a3c7b293f185b687",
+      "d1439f3d864c93e8",
+      "f7d8c2aafcc15066",
+      "a9b4f04653b430d8"
+    ],
+    "reachableLayers": [
+      [
+        "pop=1;food=0;prod=0;done=0"
+      ],
+      [
+        "pop=1;food=0;prod=2;done=0",
+        "pop=1;food=1;prod=1;done=0"
+      ],
+      [
+        "pop=1;food=0;prod=3;done=0",
+        "pop=1;food=0;prod=4;done=0",
+        "pop=1;food=1;prod=3;done=0",
+        "pop=1;food=2;prod=2;done=0"
+      ],
+      [
+        "pop=1;food=0;prod=5;done=0",
+        "pop=1;food=0;prod=6;done=0",
+        "pop=1;food=1;prod=4;done=0",
+        "pop=1;food=1;prod=5;done=0",
+        "pop=1;food=2;prod=4;done=0",
+        "pop=1;food=3;prod=3;done=0"
+      ],
+      [
+        "pop=1;food=0;prod=7;done=0",
+        "pop=1;food=1;prod=6;done=0",
+        "pop=1;food=1;prod=7;done=0",
+        "pop=1;food=2;prod=5;done=0",
+        "pop=1;food=2;prod=6;done=0",
+        "pop=1;food=3;prod=5;done=0",
+        "pop=2;food=0;prod=4;done=0"
+      ],
+      [
+        "pop=1;food=0;prod=0;done=1",
+        "pop=1;food=2;prod=7;done=0",
+        "pop=1;food=3;prod=6;done=0",
+        "pop=1;food=3;prod=7;done=0",
+        "pop=2;food=0;prod=6;done=0",
+        "pop=2;food=0;prod=7;done=0",
+        "pop=2;food=2;prod=6;done=0"
+      ]
+    ],
+    "distanceLayerCounts": [
+      1,
+      2,
+      4,
+      6,
+      7,
+      7
+    ],
+    "distanceLayerDigests": [
+      "6f3078e295c37a2d",
+      "0ecc2157f5727424",
+      "a3c7b293f185b687",
+      "d1439f3d864c93e8",
+      "f7d8c2aafcc15066",
+      "a9b4f04653b430d8"
+    ],
+    "exactStepFrontiers": [
+      [
+        "pop=1;food=0;prod=0;done=0"
+      ],
+      [
+        "pop=1;food=0;prod=2;done=0",
+        "pop=1;food=1;prod=1;done=0"
+      ],
+      [
+        "pop=1;food=0;prod=3;done=0",
+        "pop=1;food=0;prod=4;done=0",
+        "pop=1;food=1;prod=3;done=0",
+        "pop=1;food=2;prod=2;done=0"
+      ],
+      [
+        "pop=1;food=0;prod=4;done=0",
+        "pop=1;food=0;prod=5;done=0",
+        "pop=1;food=0;prod=6;done=0",
+        "pop=1;food=1;prod=4;done=0",
+        "pop=1;food=1;prod=5;done=0",
+        "pop=1;food=2;prod=4;done=0",
+        "pop=1;food=3;prod=3;done=0"
+      ],
+      [
+        "pop=1;food=0;prod=6;done=0",
+        "pop=1;food=0;prod=7;done=0",
+        "pop=1;food=1;prod=5;done=0",
+        "pop=1;food=1;prod=6;done=0",
+        "pop=1;food=1;prod=7;done=0",
+        "pop=1;food=2;prod=5;done=0",
+        "pop=1;food=2;prod=6;done=0",
+        "pop=1;food=3;prod=5;done=0",
+        "pop=2;food=0;prod=4;done=0"
+      ],
+      [
+        "pop=1;food=0;prod=0;done=1",
+        "pop=1;food=0;prod=7;done=0",
+        "pop=1;food=1;prod=7;done=0",
+        "pop=1;food=2;prod=6;done=0",
+        "pop=1;food=2;prod=7;done=0",
+        "pop=1;food=3;prod=6;done=0",
+        "pop=1;food=3;prod=7;done=0",
+        "pop=2;food=0;prod=6;done=0",
+        "pop=2;food=0;prod=7;done=0",
+        "pop=2;food=2;prod=6;done=0"
+      ]
+    ],
+    "exactStepFrontierCounts": [
+      1,
+      2,
+      4,
+      7,
+      9,
+      10
+    ],
+    "exactStepFrontierDigests": [
+      "6f3078e295c37a2d",
+      "0ecc2157f5727424",
+      "a3c7b293f185b687",
+      "584a08d7227f8259",
+      "c9033f6aed9b4385",
+      "9e0e06713d16b44d"
+    ],
+    "cartesianStateUpperBound": 192,
+    "completionReachableUpperBound": 97,
+    "completionStateKey": "pop=1;food=0;prod=0;done=1",
+    "distinctStatesTotal": 27,
+    "expandedTransitions": 41,
+    "goalStatesAtOptimum": [
+      {
+        "pop": 1,
+        "food": 0,
+        "production": 0,
+        "settlersCompleted": 1
+      }
+    ],
+    "goalStateKeysAtOptimum": [
+      "pop=1;food=0;prod=0;done=1"
+    ],
+    "optimalSequenceCount": 1,
+    "rulesDigest": "fdd5a616d46320a5",
+    "trusted": false,
+    "source": "search/synthetic.py (untrusted candidate; regenerate with --emit-fixture)"
+  }
+}

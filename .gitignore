@@ -1,0 +1,34 @@
+# Build artifacts (Lake)
+.lake/
+build/
+*.olean
+*.ilean
+*.c
+*.o
+*.a
+*.so
+*.trace
+
+# Project-local Lean toolchain: downloaded, not part of the repository
+.tools/
+!/.tools/.gitkeep
+
+# Tarballs / partial downloads
+*.tar.zst
+*.tar.gz
+*.part
+dl.log
+
+# Local investigation reports (machine/account details; not public artifacts)
+/research/ENVIRONMENT.md
+/research/TOOLCHAIN.md
+
+# Python caches
+__pycache__/
+*.py[cod]
+
+# Editor / OS noise
+.DS_Store
+*.swp
+.idea/
+.vscode/
