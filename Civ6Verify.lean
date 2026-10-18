@@ -20,6 +20,9 @@
 
 import Civ6Verify.Reachability.Finite
 import Civ6Verify.Scenarios.Synthetic
+import Civ6Verify.Model.Mvp
+import Civ6Verify.Bounds.MvpArithmetic
+import Civ6Verify.Bounds.MvpOptimality
 
 namespace Civ6Verify
 

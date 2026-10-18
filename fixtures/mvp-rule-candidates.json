@@ -1,0 +1,2602 @@
+{
+  "fixtureId": "mvp-rule-candidates-v2",
+  "version": "2.1",
+  "supersedes": [
+    "mvp-rule-candidates-v1",
+    "mvp-rule-candidates-v2"
+  ],
+  "kind": "civ6-base-mvp-rule-candidates",
+  "synthetic": false,
+  "civ6Model": true,
+  "gameFactClaim": false,
+  "contractPath": "mvp/RULE-CONTRACT.md",
+  "claimStrength": "conditional-model-internal",
+  "disclaimer": "Corrected candidate semantics for M_MVP v2. Every number is a tagged public data/manual value, an explicit scenario choice, or a named candidate value. [V]=0 and no build is pinned, so nothing here is a Civ6 fact and no number is a real-game optimum. Certified claims are limited to OptimalAt(theta, sigma, N(theta)) for the argmin and argmax theta; all other N and the envelope are untrusted search estimates.",
+  "corrections": [
+    {
+      "id": "FIX-1",
+      "was": "v1 credited settler progress on every step, including IDLE steps and steps taken at pop 1 (free production banking across the PrereqPopulation=2 boundary)",
+      "now": "R-SET-9: prog += q only when build = SETTLER; SETTLER is legal only when the PRE-TURN pop >= 2; IDLE and all pop-1 steps leave prog unchanged",
+      "effect": "v1 predictions 15/16/20 and the v1 witness are INVALID; recomputed N is 20 (cost 80) / 25 (cost 110)"
+    },
+    {
+      "id": "FIX-2",
+      "was": "build legality ambiguous w.r.t. same-step growth",
+      "now": "selection timing fixed: build is chosen against the pre-turn state; a growth event never retro-legalises SETTLER (assumption A8)",
+      "effect": "gates the growth step: no settler progress on the step where pop 1 -> 2"
+    },
+    {
+      "id": "FIX-3",
+      "was": "extra tile semantics loosely specified",
+      "now": "extra must be a real unworked tile of sigma, is canonicalised to none when build = IDLE, and contributes production only if a growth event actually occurs; otherwise it yields nothing (no ghost output)",
+      "effect": "no observable change on optimal lines; removes a modelling loophole"
+    },
+    {
+      "id": "FIX-4",
+      "was": "G1 claimed threshold rounding never bites",
+      "now": "T(3) IS evaluated because pop 3 is reachable (earliest ~t=18), so thresholdRounding is a new axis C7 {3300 floor, 3383 exact}; what is claimed (and must be proved + enumerated) is only the pop-4 ceiling: from pop 3 the max surplus is 110/step so T(3)>=3300 needs >=30 more steps, i.e. pop 4 at t>=48 > H",
+      "effect": "axis count 6 -> 7, box 64 -> 128"
+    },
+    {
+      "id": "FIX-5",
+      "was": "G6 justified the 1/100 grid by 'denominators divide 100'",
+      "now": "G6 justified by the actual finite per-step yield set: multipliers are applied once per step to that step's yield (d in {0,100,200} -> e in {0,110,220}; P in {300..800} -> P*21/20 in {315..840}), never to accumulated state, and accumulation is integer addition",
+      "effect": "argument strengthened; no value changes"
+    },
+    {
+      "id": "FIX-6",
+      "was": "'64-combo certified envelope' language",
+      "now": "certified claims are only the argmin/argmax theta; per-theta N for the other 126 and the envelope [20,25] are labelled search estimates until all 128 are certified or an inertness lemma for C2-C7 is proved",
+      "effect": "claim strength reduced"
+    },
+    {
+      "id": "FIX-7",
+      "was": "predictions not recomputed after the semantics change",
+      "now": "all 128 combinations recomputed under v2 by exact-step enumeration; envelope {20,25}",
+      "effect": "new self-check targets"
+    }
+  ],
+  "versionPin": {
+    "ruleset": {
+      "value": "Base (vanilla), R&F and GS disabled",
+      "tag": "[U]",
+      "note": "R-VER-1"
+    },
+    "speed": {
+      "value": "Standard",
+      "tag": "[D*]",
+      "source": "Module:Data/Civ6/Base/GameSpeeds CostMultiplier=100"
+    },
+    "difficulty": {
+      "value": "Prince, no human-side modifier modelled",
+      "tag": "[U]",
+      "falsifier": "FX-DIFF"
+    },
+    "civLeader": {
+      "value": "generic, no civ/leader ability modelled",
+      "tag": "[U]",
+      "falsifier": "ability text audit"
+    },
+    "dlcModsModes": {
+      "value": "none",
+      "tag": "[U]"
+    },
+    "startEra": {
+      "value": "Ancient",
+      "tag": "[U]"
+    },
+    "gameBuildId": {
+      "value": null,
+      "tag": "[U]",
+      "blocker": "K0 / FX-VER",
+      "note": "no build hash => no [D*] may be upgraded to [D]"
+    }
+  },
+  "timeModel": {
+    "unit": "settlement_step",
+    "t0": "capital already founded, before any settlement; pop=1, food=0, prog=0, trained=0",
+    "tickSemantics": "one full resolution of the v2 pipeline in stepPseudocode",
+    "uiTurnMapping": "unresolved (FX-FOUND / R-ORD-4); steps only, never UI turn numbers",
+    "horizon": 34,
+    "horizonNote": "H=34 is a horizon bound (obligation horizonOk: every theta in the box reaches the goal by H, and it also covers the documented A1/A2 sensitivities up to palace +0 = 33). Minimality needs layers 0..N only (N <= 25 predicted)."
+  },
+  "numericScale": {
+    "unit": "1/100 (integer fixed point)",
+    "food": {
+      "thresholdPop1": 1500,
+      "thresholdPop2": 2400,
+      "thresholdPop3": {
+        "floor": 3300,
+        "exactComparisonBound": 3383
+      },
+      "thresholdPop4": 4420,
+      "thresholdPop4Note": "never evaluated (guard G1)"
+    },
+    "production": {
+      "settlerCost80": 8000,
+      "settlerCost110": 11000
+    },
+    "multipliersAsRationals": {
+      "happyGrowth": "11/10",
+      "happyNonFood": "21/20"
+    },
+    "exactness": "G6 (corrected): multipliers act once per step on that step's yield from a finite set; accumulated state is only ever added to, so 1/100 is closed under the model's actual operations. A bare 'denominator divides 100' argument would not be sufficient under repeated rational operations.",
+    "forbidden": "no Float/Float32 anywhere in the model or the checker"
+  },
+  "scenario": {
+    "id": "sigma-capital-4tiles-v1",
+    "cityCenter": {
+      "food": 200,
+      "production": 100,
+      "tag": "[D*]",
+      "alwaysWorked": true,
+      "assignable": false
+    },
+    "palace": {
+      "production": 200,
+      "housing": 1,
+      "amenity": 1,
+      "productionTag": "[C]",
+      "productionFalsifier": "FX-CAL",
+      "housingTag": "[D*]",
+      "amenityTag": "[D*]",
+      "note": "BUILDING_PALACE xml carries Housing=1 Entertainment=1 only; +2 Production is wiki yield-table only (A1)"
+    },
+    "freshWater": true,
+    "housing": {
+      "freshWaterBase": 5,
+      "palace": 1,
+      "total": 6,
+      "tiers": {
+        "left>=2": "1.00",
+        "left=1": "0.50",
+        "left 0..-4": "0.25",
+        "left<=-5": "0.00"
+      },
+      "note": "inert for this MVP: pop<=3 gives left>=3 (guard G2)"
+    },
+    "amenityStock": {
+      "freePerCity": 1,
+      "palace": 1,
+      "default": 2,
+      "candidateValues": [
+        2,
+        1
+      ]
+    },
+    "tiles": [
+      {
+        "id": "G",
+        "food": 200,
+        "production": 0,
+        "terrain": "grassland, flat",
+        "tag": "[SCENARIO]"
+      },
+      {
+        "id": "GH",
+        "food": 200,
+        "production": 100,
+        "terrain": "grassland hills",
+        "tag": "[SCENARIO]"
+      },
+      {
+        "id": "PH",
+        "food": 100,
+        "production": 200,
+        "terrain": "plains hills",
+        "tag": "[SCENARIO]"
+      },
+      {
+        "id": "P",
+        "food": 100,
+        "production": 100,
+        "terrain": "plains, flat",
+        "tag": "[SCENARIO]"
+      }
+    ],
+    "tileSetNote": "scenario data, not a rule claim: fixed 4-tile workable ring, no border growth (X10), no resources/features/rivers",
+    "tileCapacityPerCitizen": 1,
+    "initialState": {
+      "t": 0,
+      "pop": 1,
+      "food": 0,
+      "prog": 0,
+      "trained": 0
+    },
+    "stateShape": "[pop, food, prog, trained]; prog is settler-specific progress (R-SET-9)",
+    "goal": "trained >= 1",
+    "preconditions": [
+      "capital on fresh water (housing 6)",
+      "flat centre",
+      "no resource/feature on the 4 tiles",
+      "no tribal village on the settle tile"
+    ]
+  },
+  "rules": [
+    {
+      "id": "R-FOOD-1",
+      "statement": "each citizen consumes 2 food per settlement",
+      "value": {
+        "foodPerCitizen": 200
+      },
+      "tag": "[D*]+[A]",
+      "source": "CITY_FOOD_CONSUMPTION_PER_POPULATION=2; 2K manual p.104"
+    },
+    {
+      "id": "R-FOOD-2",
+      "statement": "surplus = city food - consumption",
+      "value": "surplus = F - 200*pop",
+      "tag": "[A]",
+      "source": "manual p.104-105"
+    },
+    {
+      "id": "R-FOOD-4",
+      "statement": "basket >= threshold(pop) => pop+1; overflow handling is a candidate",
+      "value": "see axis basketOnGrowth",
+      "tag": "[A]",
+      "source": "manual p.105 'the city growth bucket is then emptied'"
+    },
+    {
+      "id": "R-CITY-1",
+      "statement": "city centre yields are raised to at least 2F/1P before bonuses",
+      "value": {
+        "food": 200,
+        "production": 100
+      },
+      "tag": "[D*]",
+      "source": "YIELD_FOOD_CITY_TERRAIN_REPLACE=2, YIELD_PRODUCTION_CITY_TERRAIN_REPLACE=1"
+    },
+    {
+      "id": "R-CITY-2",
+      "statement": "city centre is always worked and consumes no citizen",
+      "value": true,
+      "tag": "[C]",
+      "source": "City_(Civ6)"
+    },
+    {
+      "id": "R-CITY-4",
+      "statement": "palace +2 production, +1 housing, +1 amenity",
+      "value": {
+        "production": 200,
+        "housing": 1,
+        "amenity": 1
+      },
+      "tag": "[C]/[D*]",
+      "source": "Palace_(Civ6) yield table + BUILDING_PALACE"
+    },
+    {
+      "id": "R-CITY-5",
+      "statement": "new city starts at population 1",
+      "value": 1,
+      "tag": "[C]",
+      "source": "City_(Civ6)"
+    },
+    {
+      "id": "R-CIT-1",
+      "statement": "one citizen works one tile; no duplicates",
+      "value": {
+        "tileCapacity": 1
+      },
+      "tag": "[D*]+[A]",
+      "source": "CITY_NORMAL_PLOT_WORKER_CAPACITY=1; manual p.104"
+    },
+    {
+      "id": "R-CIT-3",
+      "statement": "assignment may be changed every settlement",
+      "value": true,
+      "tag": "[A]",
+      "source": "manual p.104"
+    },
+    {
+      "id": "R-GROW-1",
+      "statement": "threshold T(n) = 15 + 8(n-1) + (n-1)^1.5, n = current pop",
+      "value": {
+        "T1": 1500,
+        "T2": 2400,
+        "T3_floor": 3300,
+        "T3_exactBound": 3383,
+        "T4": 4420
+      },
+      "tag": "[C]+[D*]",
+      "source": "CITY_GROWTH_THRESHOLD/MULTIPLIER/EXPONENT=15/8/1.5; CFC formula thread; wiki table = floor(T(n)) 30/30",
+      "note": "T(1), T(2) are exactly integral; T(3)=33.8284 is not, and pop 3 is reachable => axis thresholdRounding"
+    },
+    {
+      "id": "R-GROW-4",
+      "statement": "the amenity growth modifier multiplies the surplus, not the threshold",
+      "value": "surplus",
+      "tag": "[D*-ui]+[C]",
+      "source": "CitySupport.lua foodGainNextTurn = foodSurplus * GetOverallGrowthModifier()"
+    },
+    {
+      "id": "R-GROW-5",
+      "statement": "at most one growth per settlement",
+      "value": "off",
+      "tag": "[U]",
+      "note": "inert (guard G3)"
+    },
+    {
+      "id": "R-HOUS-1",
+      "statement": "fresh water 5 + palace 1 = 6 housing",
+      "value": 6,
+      "tag": "[D*]+[C]",
+      "source": "CITY_POPULATION_RIVER_LAKE=5"
+    },
+    {
+      "id": "R-HOUS-2",
+      "statement": "housing - pop >= 2 => x1.00; =1 => x0.50; 0..-4 => x0.25; <=-5 => x0",
+      "value": {
+        "left2": "1.00",
+        "left1": "0.50",
+        "left0to4": "0.25",
+        "left5plus": "0"
+      },
+      "tag": "[A]+[C]",
+      "source": "Civilopedia standard-rules Growth/Housing"
+    },
+    {
+      "id": "R-AMEN-1",
+      "statement": "each city gets 1 free amenity (Base)",
+      "value": 100,
+      "tag": "[D*]",
+      "source": "CITY_AMENITIES_FOR_FREE=1"
+    },
+    {
+      "id": "R-AMEN-2",
+      "statement": "palace +1 amenity",
+      "value": 100,
+      "tag": "[D*]",
+      "source": "BUILDING_PALACE.Entertainment=1"
+    },
+    {
+      "id": "R-AMEN-3",
+      "statement": "required amenities req(pop) = max(0, floor((pop-1)/2))",
+      "value": {
+        "p1": 0,
+        "p2": 0,
+        "p3": 1,
+        "p4": 2
+      },
+      "tag": "[A]+[D*]",
+      "source": "manual p.95; CITY_POP_PER_AMENITY=2"
+    },
+    {
+      "id": "R-AMEN-4",
+      "statement": "tier = f(stock - req): >=3 Ecstatic, 1..2 Happy, 0 Content, -1..-2 Displeased",
+      "value": "as stated",
+      "tag": "[A]+[C]",
+      "source": "manual p.95; Amenities_(Civ6) Base table"
+    },
+    {
+      "id": "R-AMEN-5",
+      "statement": "Happy gives growth x1.10 and non-food yields x1.05; Content none",
+      "value": {
+        "growth": "11/10",
+        "nonFood": "21/20",
+        "content": "1/1"
+      },
+      "tag": "[A]",
+      "source": "manual p.95"
+    },
+    {
+      "id": "R-AMEN-6",
+      "statement": "tier comparison is a pure difference even when req(pop)=0",
+      "value": true,
+      "tag": "[I]",
+      "source": "CitySupport.lua AmenitiesNetAmount = GetAmenities() - GetAmenitiesNeeded()"
+    },
+    {
+      "id": "R-PROD-1",
+      "statement": "production accrues once per settlement",
+      "value": true,
+      "tag": "[C]",
+      "source": "Production_(Civ6)"
+    },
+    {
+      "id": "R-PROD-2",
+      "statement": "progress is per item and survives build switches (it does not transfer to a different item)",
+      "value": true,
+      "tag": "[C]",
+      "source": "Production_(Civ6) 'Progress is not lost'"
+    },
+    {
+      "id": "R-PROD-3",
+      "statement": "overflow carries into the next item produced",
+      "value": true,
+      "tag": "[C]",
+      "source": "Production_(Civ6)"
+    },
+    {
+      "id": "R-PROD-5",
+      "statement": "the Happy +5% multiplies the whole city production",
+      "value": true,
+      "tag": "[I]",
+      "falsifier": "FX-CAL",
+      "note": "assumption A2"
+    },
+    {
+      "id": "R-SET-1",
+      "statement": "first TRAINED settler base cost 80 (free starting settler not counted) or 110 (counted)",
+      "value": "candidate",
+      "tag": "[U]",
+      "source": "wiki Settler 30(x+1)+50 with x incl. start => 110 vs Sullla/Skymods => 80",
+      "falsifier": "FX-SET-BASE"
+    },
+    {
+      "id": "R-SET-2",
+      "statement": "COST_PROGRESSION_PREVIOUS_COPIES Param1=30 is additive",
+      "value": 3000,
+      "tag": "[D*]+[C]",
+      "note": "inert for the MVP: only k=0 is used"
+    },
+    {
+      "id": "R-SET-4",
+      "statement": "a settler can only be built when pop >= 2, judged at build selection time",
+      "value": 2,
+      "tag": "[A]+[D*]",
+      "source": "manual p.105; UNIT_SETTLER.PrereqPopulation=2"
+    },
+    {
+      "id": "R-SET-5",
+      "statement": "completion costs 1 population",
+      "value": 1,
+      "tag": "[A]+[D*]",
+      "source": "manual p.105; UNIT_SETTLER.PopulationCost=1"
+    },
+    {
+      "id": "R-SET-6",
+      "statement": "no technology prerequisite",
+      "value": null,
+      "tag": "[D*]",
+      "source": "UNIT_SETTLER has no PrereqTech"
+    },
+    {
+      "id": "R-SET-7",
+      "statement": "the city keeps growing while a settler is under construction",
+      "value": "grows",
+      "tag": "[C-weak]",
+      "falsifier": "FX-SG",
+      "note": "structural if false"
+    },
+    {
+      "id": "R-SET-8",
+      "statement": "completion does not reset the food basket",
+      "value": "keep",
+      "tag": "[C]",
+      "note": "post-goal state only"
+    },
+    {
+      "id": "R-SET-9",
+      "statement": "settler progress is credited only on a step whose build = SETTLER; SETTLER is selectable only when the pre-turn pop >= 2, so nothing is banked across the prerequisite and IDLE steps credit nothing",
+      "tag": "[I]",
+      "source": "derived from R-SET-4 (settler not selectable below pop 2) + R-PROD-2/3 (progress is per item, overflow goes to the *next* item built)",
+      "note": "v2 correction FIX-1/FIX-2; selection timing itself is assumption A8. v2.1: the production-side helper is total (extraGain(none) = 0) so the step function is defined on every legal action, including the witness growth step (IDLE + newCitizen=best)."
+    }
+  ],
+  "stepPseudocode": [
+    "legal(s,a): |a.work| <= s.pop; a.extra = none or a.extra in tiles - a.work; a.build = SETTLER => s.pop(preturn) >= 2; a.build = IDLE => a.extra = none; post-modifier surplus >= 0 (legal iff step returns some)",
+    "F = 200 + sum(food(t) for t in a.work)                     # a.extra NEVER contributes food",
+    "P = 300 + sum(prod(t) for t in a.work)                     # 300 = city centre 100 + palace 200\nextraGain(e) = 0 if e = none else prod(e)                  # TOTAL in both branches (v2.1 / B1)",
+    "grow(b,p) = if b >= T(p) then (p+1, basket(b-T(p))) else (p,b)",
+    "CREDIT(q) = q if a.build = SETTLER else 0                  # R-SET-9",
+    "GROWTH_FIRST: d = F - 200*pop; require d >= 0; e = d*growthMult(tier(pop))/100",
+    "              (pop1,food1) = grow(food+e, pop)",
+    "              if pop1 > pop and theta.newCitizen = best then P += extraGain(a.extra)   # 0 when none/IDLE",
+    "              q = round10(P*prodMult(tier(pop1))/100); prog1 = prog + CREDIT(q)",
+    "              if a.build = SETTLER and prog1 >= cost then (pop1-1, food1, prog1-cost, trained+1) else (pop1, food1, prog1, trained)",
+    "PRODUCTION_FIRST: q = round10(P*prodMult(tier(pop))/100); prog1 = prog + CREDIT(q)",
+    "              done = (a.build = SETTLER and prog1 >= cost); pop1 = pop - done; prog1 = prog1 - cost*done",
+    "              d = F - 200*pop1; require d >= 0; e = d*growthMult(tier(pop1))/100",
+    "              (pop2,food2) = grow(food+e, pop1); return (pop2, food2, prog1, trained+done)",
+    "round10(x) = x (productionRounding=exact) | floor(x/10)*10 (trunc10)",
+    "basket(v) = 0 (basketOnGrowth=zero) | v (subtract)",
+    "tier(p) from amenityStock - req(p); growthMult 110/100/85, prodMult 105/100/95 (per cent of the 1/100 value)"
+  ],
+  "candidates": [
+    {
+      "axis": "settlerCost",
+      "values": [
+        80,
+        110
+      ],
+      "defaultWitness": 80,
+      "label": "production cost of the first trained settler",
+      "whyUnresolved": "two first-hand reports say 80 (start settler not counted); the wiki formula counts it and implies 110",
+      "evidence": [
+        "[C] sullla.com/Civ6/exceedsexpectations.html",
+        "[C] catalogue.smods.ru/archives/76178",
+        "[C] Settler_(Civ6) formula",
+        "[D*] UNIT_SETTLER Cost=80, Param1=30"
+      ],
+      "falsifier": "FX-SET-BASE",
+      "predictedEffect": "5 steps (the only load-bearing axis)"
+    },
+    {
+      "axis": "turnOrder",
+      "values": [
+        "growth_first",
+        "production_first"
+      ],
+      "defaultWitness": "growth_first",
+      "label": "relative order of the food/growth phase and the production/completion phase",
+      "whyUnresolved": "no authoritative intra-turn source; the only published reconstruction is a self-described Civ5 extrapolation",
+      "evidence": [
+        "[C-weak] gqqnbig.me settlement-order article"
+      ],
+      "falsifier": "FX-ORD-a/b",
+      "predictedEffect": "none predicted"
+    },
+    {
+      "axis": "newCitizen",
+      "values": [
+        "best",
+        "none"
+      ],
+      "defaultWitness": "best",
+      "label": "does the citizen created by a growth event add production in that same settlement",
+      "whyUnresolved": "asserted then retracted in a CFC thread; no observation",
+      "evidence": [
+        "[C] forums.civfanatics.com/threads/how-do-new-citizens-work.686849/"
+      ],
+      "falsifier": "FX-ORD-c",
+      "predictedEffect": "none predicted",
+      "note": "in v2 it can only matter on a growth step that also builds SETTLER; the only growth in optimal lines happens at pop 1 where SETTLER is illegal"
+    },
+    {
+      "axis": "amenityStock",
+      "values": [
+        2,
+        1
+      ],
+      "defaultWitness": 2,
+      "label": "total amenities available to the capital (free-per-city + palace)",
+      "whyUnresolved": "component drift: release-era text describes 1; the current Base export is free 1 + palace 1; patch notes moved the free amenity into the palace",
+      "evidence": [
+        "[D*] CITY_AMENITIES_FOR_FREE=1",
+        "[D*] BUILDING_PALACE.Entertainment=1",
+        "[C] R&F/GS patch note"
+      ],
+      "falsifier": "FX-AM3",
+      "predictedEffect": "none predicted (only pop 3 discriminates, and pop 3 is never on an optimal line)"
+    },
+    {
+      "axis": "basketOnGrowth",
+      "values": [
+        "zero",
+        "subtract"
+      ],
+      "defaultWitness": "zero",
+      "label": "food basket handling on a growth event",
+      "whyUnresolved": "manual says emptied; harvest anecdotes say overflow kept",
+      "evidence": [
+        "[A] manual p.105",
+        "[C] harvest anecdotes"
+      ],
+      "falsifier": "FX-BASKET",
+      "predictedEffect": "none predicted"
+    },
+    {
+      "axis": "productionRounding",
+      "values": [
+        "exact",
+        "trunc10"
+      ],
+      "defaultWitness": "exact",
+      "label": "accumulation of the post-multiplier production value",
+      "whyUnresolved": "a single MOD-map observation (9 -> 9.4) cannot separate display truncation from accumulation truncation",
+      "evidence": [
+        "[C-weak] CFC new-citizen thread"
+      ],
+      "falsifier": "FX-PROD-FRAC",
+      "predictedEffect": "none predicted"
+    },
+    {
+      "axis": "thresholdRounding",
+      "values": [
+        "exact",
+        "floor"
+      ],
+      "defaultWitness": "exact",
+      "label": "T(3) = 33.8284 in the 1/100 model: compare against 3383 (smallest integer >= 33.8284*100) or floor the threshold to 33.00 (3300)",
+      "whyUnresolved": "the wiki integer table is floor(T(n)) but only proves the formula; pop 3 IS reachable in this scenario, so T(3) is actually evaluated",
+      "evidence": [
+        "[C] Population_(Civ6) integer table",
+        "[D*] growth constants",
+        "[C-weak] Reddit 44.1"
+      ],
+      "falsifier": "FX-TH",
+      "predictedEffect": "none - inert by G1 proof (T(3) never crossed; kept in the box for completeness, NOT 'active')",
+      "addedIn": "v2 (FIX-4)",
+      "labelStatus": "inert-by-proof"
+    }
+  ],
+  "candidateBox": {
+    "size": 128,
+    "axesOrder": [
+      "settlerCost",
+      "turnOrder",
+      "newCitizen",
+      "amenityStock",
+      "basketOnGrowth",
+      "productionRounding",
+      "thresholdRounding"
+    ],
+    "note": "product of the 7 axes; all combinations must be searched. Predicted N comes from an untrusted analyst search and must be reproduced or reported (O10). Certification is required only for argmin/argmax (O7).",
+    "combos": [
+      {
+        "settlerCost": 80,
+        "turnOrder": "growth_first",
+        "newCitizen": "best",
+        "amenityStock": 2,
+        "basketOnGrowth": "zero",
+        "productionRounding": "exact",
+        "thresholdRounding": "exact",
+        "predictedN": 20
+      },
+      {
+        "settlerCost": 80,
+        "turnOrder": "growth_first",
+        "newCitizen": "best",
+        "amenityStock": 2,
+        "basketOnGrowth": "zero",
+        "productionRounding": "exact",
+        "thresholdRounding": "floor",
+        "predictedN": 20
+      },
+      {
+        "settlerCost": 80,
+        "turnOrder": "growth_first",
+        "newCitizen": "best",
+        "amenityStock": 2,
+        "basketOnGrowth": "zero",
+        "productionRounding": "trunc10",
+        "thresholdRounding": "exact",
+        "predictedN": 20
+      },
+      {
+        "settlerCost": 80,
+        "turnOrder": "growth_first",
+        "newCitizen": "best",
+        "amenityStock": 2,
+        "basketOnGrowth": "zero",
+        "productionRounding": "trunc10",
+        "thresholdRounding": "floor",
+        "predictedN": 20
+      },
+      {
+        "settlerCost": 80,
+        "turnOrder": "growth_first",
+        "newCitizen": "best",
+        "amenityStock": 2,
+        "basketOnGrowth": "subtract",
+        "productionRounding": "exact",
+        "thresholdRounding": "exact",
+        "predictedN": 20
+      },
+      {
+        "settlerCost": 80,
+        "turnOrder": "growth_first",
+        "newCitizen": "best",
+        "amenityStock": 2,
+        "basketOnGrowth": "subtract",
+        "productionRounding": "exact",
+        "thresholdRounding": "floor",
+        "predictedN": 20
+      },
+      {
+        "settlerCost": 80,
+        "turnOrder": "growth_first",
+        "newCitizen": "best",
+        "amenityStock": 2,
+        "basketOnGrowth": "subtract",
+        "productionRounding": "trunc10",
+        "thresholdRounding": "exact",
+        "predictedN": 20
+      },
+      {
+        "settlerCost": 80,
+        "turnOrder": "growth_first",
+        "newCitizen": "best",
+        "amenityStock": 2,
+        "basketOnGrowth": "subtract",
+        "productionRounding": "trunc10",
+        "thresholdRounding": "floor",
+        "predictedN": 20
+      },
+      {
+        "settlerCost": 80,
+        "turnOrder": "growth_first",
+        "newCitizen": "best",
+        "amenityStock": 1,
+        "basketOnGrowth": "zero",
+        "productionRounding": "exact",
+        "thresholdRounding": "exact",
+        "predictedN": 20
+      },
+      {
+        "settlerCost": 80,
+        "turnOrder": "growth_first",
+        "newCitizen": "best",
+        "amenityStock": 1,
+        "basketOnGrowth": "zero",
+        "productionRounding": "exact",
+        "thresholdRounding": "floor",
+        "predictedN": 20
+      },
+      {
+        "settlerCost": 80,
+        "turnOrder": "growth_first",
+        "newCitizen": "best",
+        "amenityStock": 1,
+        "basketOnGrowth": "zero",
+        "productionRounding": "trunc10",
+        "thresholdRounding": "exact",
+        "predictedN": 20
+      },
+      {
+        "settlerCost": 80,
+        "turnOrder": "growth_first",
+        "newCitizen": "best",
+        "amenityStock": 1,
+        "basketOnGrowth": "zero",
+        "productionRounding": "trunc10",
+        "thresholdRounding": "floor",
+        "predictedN": 20
+      },
+      {
+        "settlerCost": 80,
+        "turnOrder": "growth_first",
+        "newCitizen": "best",
+        "amenityStock": 1,
+        "basketOnGrowth": "subtract",
+        "productionRounding": "exact",
+        "thresholdRounding": "exact",
+        "predictedN": 20
+      },
+      {
+        "settlerCost": 80,
+        "turnOrder": "growth_first",
+        "newCitizen": "best",
+        "amenityStock": 1,
+        "basketOnGrowth": "subtract",
+        "productionRounding": "exact",
+        "thresholdRounding": "floor",
+        "predictedN": 20
+      },
+      {
+        "settlerCost": 80,
+        "turnOrder": "growth_first",
+        "newCitizen": "best",
+        "amenityStock": 1,
+        "basketOnGrowth": "subtract",
+        "productionRounding": "trunc10",
+        "thresholdRounding": "exact",
+        "predictedN": 20
+      },
+      {
+        "settlerCost": 80,
+        "turnOrder": "growth_first",
+        "newCitizen": "best",
+        "amenityStock": 1,
+        "basketOnGrowth": "subtract",
+        "productionRounding": "trunc10",
+        "thresholdRounding": "floor",
+        "predictedN": 20
+      },
+      {
+        "settlerCost": 80,
+        "turnOrder": "growth_first",
+        "newCitizen": "none",
+        "amenityStock": 2,
+        "basketOnGrowth": "zero",
+        "productionRounding": "exact",
+        "thresholdRounding": "exact",
+        "predictedN": 20
+      },
+      {
+        "settlerCost": 80,
+        "turnOrder": "growth_first",
+        "newCitizen": "none",
+        "amenityStock": 2,
+        "basketOnGrowth": "zero",
+        "productionRounding": "exact",
+        "thresholdRounding": "floor",
+        "predictedN": 20
+      },
+      {
+        "settlerCost": 80,
+        "turnOrder": "growth_first",
+        "newCitizen": "none",
+        "amenityStock": 2,
+        "basketOnGrowth": "zero",
+        "productionRounding": "trunc10",
+        "thresholdRounding": "exact",
+        "predictedN": 20
+      },
+      {
+        "settlerCost": 80,
+        "turnOrder": "growth_first",
+        "newCitizen": "none",
+        "amenityStock": 2,
+        "basketOnGrowth": "zero",
+        "productionRounding": "trunc10",
+        "thresholdRounding": "floor",
+        "predictedN": 20
+      },
+      {
+        "settlerCost": 80,
+        "turnOrder": "growth_first",
+        "newCitizen": "none",
+        "amenityStock": 2,
+        "basketOnGrowth": "subtract",
+        "productionRounding": "exact",
+        "thresholdRounding": "exact",
+        "predictedN": 20
+      },
+      {
+        "settlerCost": 80,
+        "turnOrder": "growth_first",
+        "newCitizen": "none",
+        "amenityStock": 2,
+        "basketOnGrowth": "subtract",
+        "productionRounding": "exact",
+        "thresholdRounding": "floor",
+        "predictedN": 20
+      },
+      {
+        "settlerCost": 80,
+        "turnOrder": "growth_first",
+        "newCitizen": "none",
+        "amenityStock": 2,
+        "basketOnGrowth": "subtract",
+        "productionRounding": "trunc10",
+        "thresholdRounding": "exact",
+        "predictedN": 20
+      },
+      {
+        "settlerCost": 80,
+        "turnOrder": "growth_first",
+        "newCitizen": "none",
+        "amenityStock": 2,
+        "basketOnGrowth": "subtract",
+        "productionRounding": "trunc10",
+        "thresholdRounding": "floor",
+        "predictedN": 20
+      },
+      {
+        "settlerCost": 80,
+        "turnOrder": "growth_first",
+        "newCitizen": "none",
+        "amenityStock": 1,
+        "basketOnGrowth": "zero",
+        "productionRounding": "exact",
+        "thresholdRounding": "exact",
+        "predictedN": 20
+      },
+      {
+        "settlerCost": 80,
+        "turnOrder": "growth_first",
+        "newCitizen": "none",
+        "amenityStock": 1,
+        "basketOnGrowth": "zero",
+        "productionRounding": "exact",
+        "thresholdRounding": "floor",
+        "predictedN": 20
+      },
+      {
+        "settlerCost": 80,
+        "turnOrder": "growth_first",
+        "newCitizen": "none",
+        "amenityStock": 1,
+        "basketOnGrowth": "zero",
+        "productionRounding": "trunc10",
+        "thresholdRounding": "exact",
+        "predictedN": 20
+      },
+      {
+        "settlerCost": 80,
+        "turnOrder": "growth_first",
+        "newCitizen": "none",
+        "amenityStock": 1,
+        "basketOnGrowth": "zero",
+        "productionRounding": "trunc10",
+        "thresholdRounding": "floor",
+        "predictedN": 20
+      },
+      {
+        "settlerCost": 80,
+        "turnOrder": "growth_first",
+        "newCitizen": "none",
+        "amenityStock": 1,
+        "basketOnGrowth": "subtract",
+        "productionRounding": "exact",
+        "thresholdRounding": "exact",
+        "predictedN": 20
+      },
+      {
+        "settlerCost": 80,
+        "turnOrder": "growth_first",
+        "newCitizen": "none",
+        "amenityStock": 1,
+        "basketOnGrowth": "subtract",
+        "productionRounding": "exact",
+        "thresholdRounding": "floor",
+        "predictedN": 20
+      },
+      {
+        "settlerCost": 80,
+        "turnOrder": "growth_first",
+        "newCitizen": "none",
+        "amenityStock": 1,
+        "basketOnGrowth": "subtract",
+        "productionRounding": "trunc10",
+        "thresholdRounding": "exact",
+        "predictedN": 20
+      },
+      {
+        "settlerCost": 80,
+        "turnOrder": "growth_first",
+        "newCitizen": "none",
+        "amenityStock": 1,
+        "basketOnGrowth": "subtract",
+        "productionRounding": "trunc10",
+        "thresholdRounding": "floor",
+        "predictedN": 20
+      },
+      {
+        "settlerCost": 80,
+        "turnOrder": "production_first",
+        "newCitizen": "best",
+        "amenityStock": 2,
+        "basketOnGrowth": "zero",
+        "productionRounding": "exact",
+        "thresholdRounding": "exact",
+        "predictedN": 20
+      },
+      {
+        "settlerCost": 80,
+        "turnOrder": "production_first",
+        "newCitizen": "best",
+        "amenityStock": 2,
+        "basketOnGrowth": "zero",
+        "productionRounding": "exact",
+        "thresholdRounding": "floor",
+        "predictedN": 20
+      },
+      {
+        "settlerCost": 80,
+        "turnOrder": "production_first",
+        "newCitizen": "best",
+        "amenityStock": 2,
+        "basketOnGrowth": "zero",
+        "productionRounding": "trunc10",
+        "thresholdRounding": "exact",
+        "predictedN": 20
+      },
+      {
+        "settlerCost": 80,
+        "turnOrder": "production_first",
+        "newCitizen": "best",
+        "amenityStock": 2,
+        "basketOnGrowth": "zero",
+        "productionRounding": "trunc10",
+        "thresholdRounding": "floor",
+        "predictedN": 20
+      },
+      {
+        "settlerCost": 80,
+        "turnOrder": "production_first",
+        "newCitizen": "best",
+        "amenityStock": 2,
+        "basketOnGrowth": "subtract",
+        "productionRounding": "exact",
+        "thresholdRounding": "exact",
+        "predictedN": 20
+      },
+      {
+        "settlerCost": 80,
+        "turnOrder": "production_first",
+        "newCitizen": "best",
+        "amenityStock": 2,
+        "basketOnGrowth": "subtract",
+        "productionRounding": "exact",
+        "thresholdRounding": "floor",
+        "predictedN": 20
+      },
+      {
+        "settlerCost": 80,
+        "turnOrder": "production_first",
+        "newCitizen": "best",
+        "amenityStock": 2,
+        "basketOnGrowth": "subtract",
+        "productionRounding": "trunc10",
+        "thresholdRounding": "exact",
+        "predictedN": 20
+      },
+      {
+        "settlerCost": 80,
+        "turnOrder": "production_first",
+        "newCitizen": "best",
+        "amenityStock": 2,
+        "basketOnGrowth": "subtract",
+        "productionRounding": "trunc10",
+        "thresholdRounding": "floor",
+        "predictedN": 20
+      },
+      {
+        "settlerCost": 80,
+        "turnOrder": "production_first",
+        "newCitizen": "best",
+        "amenityStock": 1,
+        "basketOnGrowth": "zero",
+        "productionRounding": "exact",
+        "thresholdRounding": "exact",
+        "predictedN": 20
+      },
+      {
+        "settlerCost": 80,
+        "turnOrder": "production_first",
+        "newCitizen": "best",
+        "amenityStock": 1,
+        "basketOnGrowth": "zero",
+        "productionRounding": "exact",
+        "thresholdRounding": "floor",
+        "predictedN": 20
+      },
+      {
+        "settlerCost": 80,
+        "turnOrder": "production_first",
+        "newCitizen": "best",
+        "amenityStock": 1,
+        "basketOnGrowth": "zero",
+        "productionRounding": "trunc10",
+        "thresholdRounding": "exact",
+        "predictedN": 20
+      },
+      {
+        "settlerCost": 80,
+        "turnOrder": "production_first",
+        "newCitizen": "best",
+        "amenityStock": 1,
+        "basketOnGrowth": "zero",
+        "productionRounding": "trunc10",
+        "thresholdRounding": "floor",
+        "predictedN": 20
+      },
+      {
+        "settlerCost": 80,
+        "turnOrder": "production_first",
+        "newCitizen": "best",
+        "amenityStock": 1,
+        "basketOnGrowth": "subtract",
+        "productionRounding": "exact",
+        "thresholdRounding": "exact",
+        "predictedN": 20
+      },
+      {
+        "settlerCost": 80,
+        "turnOrder": "production_first",
+        "newCitizen": "best",
+        "amenityStock": 1,
+        "basketOnGrowth": "subtract",
+        "productionRounding": "exact",
+        "thresholdRounding": "floor",
+        "predictedN": 20
+      },
+      {
+        "settlerCost": 80,
+        "turnOrder": "production_first",
+        "newCitizen": "best",
+        "amenityStock": 1,
+        "basketOnGrowth": "subtract",
+        "productionRounding": "trunc10",
+        "thresholdRounding": "exact",
+        "predictedN": 20
+      },
+      {
+        "settlerCost": 80,
+        "turnOrder": "production_first",
+        "newCitizen": "best",
+        "amenityStock": 1,
+        "basketOnGrowth": "subtract",
+        "productionRounding": "trunc10",
+        "thresholdRounding": "floor",
+        "predictedN": 20
+      },
+      {
+        "settlerCost": 80,
+        "turnOrder": "production_first",
+        "newCitizen": "none",
+        "amenityStock": 2,
+        "basketOnGrowth": "zero",
+        "productionRounding": "exact",
+        "thresholdRounding": "exact",
+        "predictedN": 20
+      },
+      {
+        "settlerCost": 80,
+        "turnOrder": "production_first",
+        "newCitizen": "none",
+        "amenityStock": 2,
+        "basketOnGrowth": "zero",
+        "productionRounding": "exact",
+        "thresholdRounding": "floor",
+        "predictedN": 20
+      },
+      {
+        "settlerCost": 80,
+        "turnOrder": "production_first",
+        "newCitizen": "none",
+        "amenityStock": 2,
+        "basketOnGrowth": "zero",
+        "productionRounding": "trunc10",
+        "thresholdRounding": "exact",
+        "predictedN": 20
+      },
+      {
+        "settlerCost": 80,
+        "turnOrder": "production_first",
+        "newCitizen": "none",
+        "amenityStock": 2,
+        "basketOnGrowth": "zero",
+        "productionRounding": "trunc10",
+        "thresholdRounding": "floor",
+        "predictedN": 20
+      },
+      {
+        "settlerCost": 80,
+        "turnOrder": "production_first",
+        "newCitizen": "none",
+        "amenityStock": 2,
+        "basketOnGrowth": "subtract",
+        "productionRounding": "exact",
+        "thresholdRounding": "exact",
+        "predictedN": 20
+      },
+      {
+        "settlerCost": 80,
+        "turnOrder": "production_first",
+        "newCitizen": "none",
+        "amenityStock": 2,
+        "basketOnGrowth": "subtract",
+        "productionRounding": "exact",
+        "thresholdRounding": "floor",
+        "predictedN": 20
+      },
+      {
+        "settlerCost": 80,
+        "turnOrder": "production_first",
+        "newCitizen": "none",
+        "amenityStock": 2,
+        "basketOnGrowth": "subtract",
+        "productionRounding": "trunc10",
+        "thresholdRounding": "exact",
+        "predictedN": 20
+      },
+      {
+        "settlerCost": 80,
+        "turnOrder": "production_first",
+        "newCitizen": "none",
+        "amenityStock": 2,
+        "basketOnGrowth": "subtract",
+        "productionRounding": "trunc10",
+        "thresholdRounding": "floor",
+        "predictedN": 20
+      },
+      {
+        "settlerCost": 80,
+        "turnOrder": "production_first",
+        "newCitizen": "none",
+        "amenityStock": 1,
+        "basketOnGrowth": "zero",
+        "productionRounding": "exact",
+        "thresholdRounding": "exact",
+        "predictedN": 20
+      },
+      {
+        "settlerCost": 80,
+        "turnOrder": "production_first",
+        "newCitizen": "none",
+        "amenityStock": 1,
+        "basketOnGrowth": "zero",
+        "productionRounding": "exact",
+        "thresholdRounding": "floor",
+        "predictedN": 20
+      },
+      {
+        "settlerCost": 80,
+        "turnOrder": "production_first",
+        "newCitizen": "none",
+        "amenityStock": 1,
+        "basketOnGrowth": "zero",
+        "productionRounding": "trunc10",
+        "thresholdRounding": "exact",
+        "predictedN": 20
+      },
+      {
+        "settlerCost": 80,
+        "turnOrder": "production_first",
+        "newCitizen": "none",
+        "amenityStock": 1,
+        "basketOnGrowth": "zero",
+        "productionRounding": "trunc10",
+        "thresholdRounding": "floor",
+        "predictedN": 20
+      },
+      {
+        "settlerCost": 80,
+        "turnOrder": "production_first",
+        "newCitizen": "none",
+        "amenityStock": 1,
+        "basketOnGrowth": "subtract",
+        "productionRounding": "exact",
+        "thresholdRounding": "exact",
+        "predictedN": 20
+      },
+      {
+        "settlerCost": 80,
+        "turnOrder": "production_first",
+        "newCitizen": "none",
+        "amenityStock": 1,
+        "basketOnGrowth": "subtract",
+        "productionRounding": "exact",
+        "thresholdRounding": "floor",
+        "predictedN": 20
+      },
+      {
+        "settlerCost": 80,
+        "turnOrder": "production_first",
+        "newCitizen": "none",
+        "amenityStock": 1,
+        "basketOnGrowth": "subtract",
+        "productionRounding": "trunc10",
+        "thresholdRounding": "exact",
+        "predictedN": 20
+      },
+      {
+        "settlerCost": 80,
+        "turnOrder": "production_first",
+        "newCitizen": "none",
+        "amenityStock": 1,
+        "basketOnGrowth": "subtract",
+        "productionRounding": "trunc10",
+        "thresholdRounding": "floor",
+        "predictedN": 20
+      },
+      {
+        "settlerCost": 110,
+        "turnOrder": "growth_first",
+        "newCitizen": "best",
+        "amenityStock": 2,
+        "basketOnGrowth": "zero",
+        "productionRounding": "exact",
+        "thresholdRounding": "exact",
+        "predictedN": 25
+      },
+      {
+        "settlerCost": 110,
+        "turnOrder": "growth_first",
+        "newCitizen": "best",
+        "amenityStock": 2,
+        "basketOnGrowth": "zero",
+        "productionRounding": "exact",
+        "thresholdRounding": "floor",
+        "predictedN": 25
+      },
+      {
+        "settlerCost": 110,
+        "turnOrder": "growth_first",
+        "newCitizen": "best",
+        "amenityStock": 2,
+        "basketOnGrowth": "zero",
+        "productionRounding": "trunc10",
+        "thresholdRounding": "exact",
+        "predictedN": 25
+      },
+      {
+        "settlerCost": 110,
+        "turnOrder": "growth_first",
+        "newCitizen": "best",
+        "amenityStock": 2,
+        "basketOnGrowth": "zero",
+        "productionRounding": "trunc10",
+        "thresholdRounding": "floor",
+        "predictedN": 25
+      },
+      {
+        "settlerCost": 110,
+        "turnOrder": "growth_first",
+        "newCitizen": "best",
+        "amenityStock": 2,
+        "basketOnGrowth": "subtract",
+        "productionRounding": "exact",
+        "thresholdRounding": "exact",
+        "predictedN": 25
+      },
+      {
+        "settlerCost": 110,
+        "turnOrder": "growth_first",
+        "newCitizen": "best",
+        "amenityStock": 2,
+        "basketOnGrowth": "subtract",
+        "productionRounding": "exact",
+        "thresholdRounding": "floor",
+        "predictedN": 25
+      },
+      {
+        "settlerCost": 110,
+        "turnOrder": "growth_first",
+        "newCitizen": "best",
+        "amenityStock": 2,
+        "basketOnGrowth": "subtract",
+        "productionRounding": "trunc10",
+        "thresholdRounding": "exact",
+        "predictedN": 25
+      },
+      {
+        "settlerCost": 110,
+        "turnOrder": "growth_first",
+        "newCitizen": "best",
+        "amenityStock": 2,
+        "basketOnGrowth": "subtract",
+        "productionRounding": "trunc10",
+        "thresholdRounding": "floor",
+        "predictedN": 25
+      },
+      {
+        "settlerCost": 110,
+        "turnOrder": "growth_first",
+        "newCitizen": "best",
+        "amenityStock": 1,
+        "basketOnGrowth": "zero",
+        "productionRounding": "exact",
+        "thresholdRounding": "exact",
+        "predictedN": 25
+      },
+      {
+        "settlerCost": 110,
+        "turnOrder": "growth_first",
+        "newCitizen": "best",
+        "amenityStock": 1,
+        "basketOnGrowth": "zero",
+        "productionRounding": "exact",
+        "thresholdRounding": "floor",
+        "predictedN": 25
+      },
+      {
+        "settlerCost": 110,
+        "turnOrder": "growth_first",
+        "newCitizen": "best",
+        "amenityStock": 1,
+        "basketOnGrowth": "zero",
+        "productionRounding": "trunc10",
+        "thresholdRounding": "exact",
+        "predictedN": 25
+      },
+      {
+        "settlerCost": 110,
+        "turnOrder": "growth_first",
+        "newCitizen": "best",
+        "amenityStock": 1,
+        "basketOnGrowth": "zero",
+        "productionRounding": "trunc10",
+        "thresholdRounding": "floor",
+        "predictedN": 25
+      },
+      {
+        "settlerCost": 110,
+        "turnOrder": "growth_first",
+        "newCitizen": "best",
+        "amenityStock": 1,
+        "basketOnGrowth": "subtract",
+        "productionRounding": "exact",
+        "thresholdRounding": "exact",
+        "predictedN": 25
+      },
+      {
+        "settlerCost": 110,
+        "turnOrder": "growth_first",
+        "newCitizen": "best",
+        "amenityStock": 1,
+        "basketOnGrowth": "subtract",
+        "productionRounding": "exact",
+        "thresholdRounding": "floor",
+        "predictedN": 25
+      },
+      {
+        "settlerCost": 110,
+        "turnOrder": "growth_first",
+        "newCitizen": "best",
+        "amenityStock": 1,
+        "basketOnGrowth": "subtract",
+        "productionRounding": "trunc10",
+        "thresholdRounding": "exact",
+        "predictedN": 25
+      },
+      {
+        "settlerCost": 110,
+        "turnOrder": "growth_first",
+        "newCitizen": "best",
+        "amenityStock": 1,
+        "basketOnGrowth": "subtract",
+        "productionRounding": "trunc10",
+        "thresholdRounding": "floor",
+        "predictedN": 25
+      },
+      {
+        "settlerCost": 110,
+        "turnOrder": "growth_first",
+        "newCitizen": "none",
+        "amenityStock": 2,
+        "basketOnGrowth": "zero",
+        "productionRounding": "exact",
+        "thresholdRounding": "exact",
+        "predictedN": 25
+      },
+      {
+        "settlerCost": 110,
+        "turnOrder": "growth_first",
+        "newCitizen": "none",
+        "amenityStock": 2,
+        "basketOnGrowth": "zero",
+        "productionRounding": "exact",
+        "thresholdRounding": "floor",
+        "predictedN": 25
+      },
+      {
+        "settlerCost": 110,
+        "turnOrder": "growth_first",
+        "newCitizen": "none",
+        "amenityStock": 2,
+        "basketOnGrowth": "zero",
+        "productionRounding": "trunc10",
+        "thresholdRounding": "exact",
+        "predictedN": 25
+      },
+      {
+        "settlerCost": 110,
+        "turnOrder": "growth_first",
+        "newCitizen": "none",
+        "amenityStock": 2,
+        "basketOnGrowth": "zero",
+        "productionRounding": "trunc10",
+        "thresholdRounding": "floor",
+        "predictedN": 25
+      },
+      {
+        "settlerCost": 110,
+        "turnOrder": "growth_first",
+        "newCitizen": "none",
+        "amenityStock": 2,
+        "basketOnGrowth": "subtract",
+        "productionRounding": "exact",
+        "thresholdRounding": "exact",
+        "predictedN": 25
+      },
+      {
+        "settlerCost": 110,
+        "turnOrder": "growth_first",
+        "newCitizen": "none",
+        "amenityStock": 2,
+        "basketOnGrowth": "subtract",
+        "productionRounding": "exact",
+        "thresholdRounding": "floor",
+        "predictedN": 25
+      },
+      {
+        "settlerCost": 110,
+        "turnOrder": "growth_first",
+        "newCitizen": "none",
+        "amenityStock": 2,
+        "basketOnGrowth": "subtract",
+        "productionRounding": "trunc10",
+        "thresholdRounding": "exact",
+        "predictedN": 25
+      },
+      {
+        "settlerCost": 110,
+        "turnOrder": "growth_first",
+        "newCitizen": "none",
+        "amenityStock": 2,
+        "basketOnGrowth": "subtract",
+        "productionRounding": "trunc10",
+        "thresholdRounding": "floor",
+        "predictedN": 25
+      },
+      {
+        "settlerCost": 110,
+        "turnOrder": "growth_first",
+        "newCitizen": "none",
+        "amenityStock": 1,
+        "basketOnGrowth": "zero",
+        "productionRounding": "exact",
+        "thresholdRounding": "exact",
+        "predictedN": 25
+      },
+      {
+        "settlerCost": 110,
+        "turnOrder": "growth_first",
+        "newCitizen": "none",
+        "amenityStock": 1,
+        "basketOnGrowth": "zero",
+        "productionRounding": "exact",
+        "thresholdRounding": "floor",
+        "predictedN": 25
+      },
+      {
+        "settlerCost": 110,
+        "turnOrder": "growth_first",
+        "newCitizen": "none",
+        "amenityStock": 1,
+        "basketOnGrowth": "zero",
+        "productionRounding": "trunc10",
+        "thresholdRounding": "exact",
+        "predictedN": 25
+      },
+      {
+        "settlerCost": 110,
+        "turnOrder": "growth_first",
+        "newCitizen": "none",
+        "amenityStock": 1,
+        "basketOnGrowth": "zero",
+        "productionRounding": "trunc10",
+        "thresholdRounding": "floor",
+        "predictedN": 25
+      },
+      {
+        "settlerCost": 110,
+        "turnOrder": "growth_first",
+        "newCitizen": "none",
+        "amenityStock": 1,
+        "basketOnGrowth": "subtract",
+        "productionRounding": "exact",
+        "thresholdRounding": "exact",
+        "predictedN": 25
+      },
+      {
+        "settlerCost": 110,
+        "turnOrder": "growth_first",
+        "newCitizen": "none",
+        "amenityStock": 1,
+        "basketOnGrowth": "subtract",
+        "productionRounding": "exact",
+        "thresholdRounding": "floor",
+        "predictedN": 25
+      },
+      {
+        "settlerCost": 110,
+        "turnOrder": "growth_first",
+        "newCitizen": "none",
+        "amenityStock": 1,
+        "basketOnGrowth": "subtract",
+        "productionRounding": "trunc10",
+        "thresholdRounding": "exact",
+        "predictedN": 25
+      },
+      {
+        "settlerCost": 110,
+        "turnOrder": "growth_first",
+        "newCitizen": "none",
+        "amenityStock": 1,
+        "basketOnGrowth": "subtract",
+        "productionRounding": "trunc10",
+        "thresholdRounding": "floor",
+        "predictedN": 25
+      },
+      {
+        "settlerCost": 110,
+        "turnOrder": "production_first",
+        "newCitizen": "best",
+        "amenityStock": 2,
+        "basketOnGrowth": "zero",
+        "productionRounding": "exact",
+        "thresholdRounding": "exact",
+        "predictedN": 25
+      },
+      {
+        "settlerCost": 110,
+        "turnOrder": "production_first",
+        "newCitizen": "best",
+        "amenityStock": 2,
+        "basketOnGrowth": "zero",
+        "productionRounding": "exact",
+        "thresholdRounding": "floor",
+        "predictedN": 25
+      },
+      {
+        "settlerCost": 110,
+        "turnOrder": "production_first",
+        "newCitizen": "best",
+        "amenityStock": 2,
+        "basketOnGrowth": "zero",
+        "productionRounding": "trunc10",
+        "thresholdRounding": "exact",
+        "predictedN": 25
+      },
+      {
+        "settlerCost": 110,
+        "turnOrder": "production_first",
+        "newCitizen": "best",
+        "amenityStock": 2,
+        "basketOnGrowth": "zero",
+        "productionRounding": "trunc10",
+        "thresholdRounding": "floor",
+        "predictedN": 25
+      },
+      {
+        "settlerCost": 110,
+        "turnOrder": "production_first",
+        "newCitizen": "best",
+        "amenityStock": 2,
+        "basketOnGrowth": "subtract",
+        "productionRounding": "exact",
+        "thresholdRounding": "exact",
+        "predictedN": 25
+      },
+      {
+        "settlerCost": 110,
+        "turnOrder": "production_first",
+        "newCitizen": "best",
+        "amenityStock": 2,
+        "basketOnGrowth": "subtract",
+        "productionRounding": "exact",
+        "thresholdRounding": "floor",
+        "predictedN": 25
+      },
+      {
+        "settlerCost": 110,
+        "turnOrder": "production_first",
+        "newCitizen": "best",
+        "amenityStock": 2,
+        "basketOnGrowth": "subtract",
+        "productionRounding": "trunc10",
+        "thresholdRounding": "exact",
+        "predictedN": 25
+      },
+      {
+        "settlerCost": 110,
+        "turnOrder": "production_first",
+        "newCitizen": "best",
+        "amenityStock": 2,
+        "basketOnGrowth": "subtract",
+        "productionRounding": "trunc10",
+        "thresholdRounding": "floor",
+        "predictedN": 25
+      },
+      {
+        "settlerCost": 110,
+        "turnOrder": "production_first",
+        "newCitizen": "best",
+        "amenityStock": 1,
+        "basketOnGrowth": "zero",
+        "productionRounding": "exact",
+        "thresholdRounding": "exact",
+        "predictedN": 25
+      },
+      {
+        "settlerCost": 110,
+        "turnOrder": "production_first",
+        "newCitizen": "best",
+        "amenityStock": 1,
+        "basketOnGrowth": "zero",
+        "productionRounding": "exact",
+        "thresholdRounding": "floor",
+        "predictedN": 25
+      },
+      {
+        "settlerCost": 110,
+        "turnOrder": "production_first",
+        "newCitizen": "best",
+        "amenityStock": 1,
+        "basketOnGrowth": "zero",
+        "productionRounding": "trunc10",
+        "thresholdRounding": "exact",
+        "predictedN": 25
+      },
+      {
+        "settlerCost": 110,
+        "turnOrder": "production_first",
+        "newCitizen": "best",
+        "amenityStock": 1,
+        "basketOnGrowth": "zero",
+        "productionRounding": "trunc10",
+        "thresholdRounding": "floor",
+        "predictedN": 25
+      },
+      {
+        "settlerCost": 110,
+        "turnOrder": "production_first",
+        "newCitizen": "best",
+        "amenityStock": 1,
+        "basketOnGrowth": "subtract",
+        "productionRounding": "exact",
+        "thresholdRounding": "exact",
+        "predictedN": 25
+      },
+      {
+        "settlerCost": 110,
+        "turnOrder": "production_first",
+        "newCitizen": "best",
+        "amenityStock": 1,
+        "basketOnGrowth": "subtract",
+        "productionRounding": "exact",
+        "thresholdRounding": "floor",
+        "predictedN": 25
+      },
+      {
+        "settlerCost": 110,
+        "turnOrder": "production_first",
+        "newCitizen": "best",
+        "amenityStock": 1,
+        "basketOnGrowth": "subtract",
+        "productionRounding": "trunc10",
+        "thresholdRounding": "exact",
+        "predictedN": 25
+      },
+      {
+        "settlerCost": 110,
+        "turnOrder": "production_first",
+        "newCitizen": "best",
+        "amenityStock": 1,
+        "basketOnGrowth": "subtract",
+        "productionRounding": "trunc10",
+        "thresholdRounding": "floor",
+        "predictedN": 25
+      },
+      {
+        "settlerCost": 110,
+        "turnOrder": "production_first",
+        "newCitizen": "none",
+        "amenityStock": 2,
+        "basketOnGrowth": "zero",
+        "productionRounding": "exact",
+        "thresholdRounding": "exact",
+        "predictedN": 25
+      },
+      {
+        "settlerCost": 110,
+        "turnOrder": "production_first",
+        "newCitizen": "none",
+        "amenityStock": 2,
+        "basketOnGrowth": "zero",
+        "productionRounding": "exact",
+        "thresholdRounding": "floor",
+        "predictedN": 25
+      },
+      {
+        "settlerCost": 110,
+        "turnOrder": "production_first",
+        "newCitizen": "none",
+        "amenityStock": 2,
+        "basketOnGrowth": "zero",
+        "productionRounding": "trunc10",
+        "thresholdRounding": "exact",
+        "predictedN": 25
+      },
+      {
+        "settlerCost": 110,
+        "turnOrder": "production_first",
+        "newCitizen": "none",
+        "amenityStock": 2,
+        "basketOnGrowth": "zero",
+        "productionRounding": "trunc10",
+        "thresholdRounding": "floor",
+        "predictedN": 25
+      },
+      {
+        "settlerCost": 110,
+        "turnOrder": "production_first",
+        "newCitizen": "none",
+        "amenityStock": 2,
+        "basketOnGrowth": "subtract",
+        "productionRounding": "exact",
+        "thresholdRounding": "exact",
+        "predictedN": 25
+      },
+      {
+        "settlerCost": 110,
+        "turnOrder": "production_first",
+        "newCitizen": "none",
+        "amenityStock": 2,
+        "basketOnGrowth": "subtract",
+        "productionRounding": "exact",
+        "thresholdRounding": "floor",
+        "predictedN": 25
+      },
+      {
+        "settlerCost": 110,
+        "turnOrder": "production_first",
+        "newCitizen": "none",
+        "amenityStock": 2,
+        "basketOnGrowth": "subtract",
+        "productionRounding": "trunc10",
+        "thresholdRounding": "exact",
+        "predictedN": 25
+      },
+      {
+        "settlerCost": 110,
+        "turnOrder": "production_first",
+        "newCitizen": "none",
+        "amenityStock": 2,
+        "basketOnGrowth": "subtract",
+        "productionRounding": "trunc10",
+        "thresholdRounding": "floor",
+        "predictedN": 25
+      },
+      {
+        "settlerCost": 110,
+        "turnOrder": "production_first",
+        "newCitizen": "none",
+        "amenityStock": 1,
+        "basketOnGrowth": "zero",
+        "productionRounding": "exact",
+        "thresholdRounding": "exact",
+        "predictedN": 25
+      },
+      {
+        "settlerCost": 110,
+        "turnOrder": "production_first",
+        "newCitizen": "none",
+        "amenityStock": 1,
+        "basketOnGrowth": "zero",
+        "productionRounding": "exact",
+        "thresholdRounding": "floor",
+        "predictedN": 25
+      },
+      {
+        "settlerCost": 110,
+        "turnOrder": "production_first",
+        "newCitizen": "none",
+        "amenityStock": 1,
+        "basketOnGrowth": "zero",
+        "productionRounding": "trunc10",
+        "thresholdRounding": "exact",
+        "predictedN": 25
+      },
+      {
+        "settlerCost": 110,
+        "turnOrder": "production_first",
+        "newCitizen": "none",
+        "amenityStock": 1,
+        "basketOnGrowth": "zero",
+        "productionRounding": "trunc10",
+        "thresholdRounding": "floor",
+        "predictedN": 25
+      },
+      {
+        "settlerCost": 110,
+        "turnOrder": "production_first",
+        "newCitizen": "none",
+        "amenityStock": 1,
+        "basketOnGrowth": "subtract",
+        "productionRounding": "exact",
+        "thresholdRounding": "exact",
+        "predictedN": 25
+      },
+      {
+        "settlerCost": 110,
+        "turnOrder": "production_first",
+        "newCitizen": "none",
+        "amenityStock": 1,
+        "basketOnGrowth": "subtract",
+        "productionRounding": "exact",
+        "thresholdRounding": "floor",
+        "predictedN": 25
+      },
+      {
+        "settlerCost": 110,
+        "turnOrder": "production_first",
+        "newCitizen": "none",
+        "amenityStock": 1,
+        "basketOnGrowth": "subtract",
+        "productionRounding": "trunc10",
+        "thresholdRounding": "exact",
+        "predictedN": 25
+      },
+      {
+        "settlerCost": 110,
+        "turnOrder": "production_first",
+        "newCitizen": "none",
+        "amenityStock": 1,
+        "basketOnGrowth": "subtract",
+        "productionRounding": "trunc10",
+        "thresholdRounding": "floor",
+        "predictedN": 25
+      }
+    ]
+  },
+  "guards": [
+    {
+      "id": "G1",
+      "name": "threshold scope and population ceiling (labels corrected in v2.1)",
+      "status": "proved arithmetically + enumeration cross-check (O8)",
+      "detail": "The model DEFINES T(3) and T(4); the claim is that neither is ever reached. Earliest pop 2 is t=7 (ceil(1500/220)); earliest pop 3 is t >= 7 + ceil(2400/220) = 18; at pop 3 the max surplus is 100 (F <= 700, consumption 600) so e <= 110/step. Hence at any t <= H=34 food at pop 3 is <= 110*(34-18)+219 = 1979 < 3300: T(3) is never crossed, so C7 is inert BY PROOF (not 'active'), and pop 4 (t >= 48) is unreachable. The invariant food < T(pop) holds in every stored state by construction.",
+      "measured": "analyst measurement, NOT certified: max pop 3; max pop-3 food 100 (zero) / 170 (subtract) at cost 80 and 600/670 at cost 110; O8 must re-derive",
+      "observed": {
+        "maxPop": 3,
+        "maxLayerObserved": 20972,
+        "note": "analyst measurement over the 128-combo run, NOT certified; O8 must re-derive. Pop-3 food is bounded analytically by 110*(H-18)+219 = 1979 < 3300, so no stored pop-3 food figure is claimed here."
+      }
+    },
+    {
+      "id": "G2",
+      "name": "housing inert",
+      "detail": "housing 6: pop<=3 => left>=3>=2 => factor 1.00; even pop 4 gives left=2 => 1.00. Breaks only above pop 4 or on a non-fresh-water capital."
+    },
+    {
+      "id": "G3",
+      "name": "one growth per settlement",
+      "detail": "max surplus 220 < T(1)=1500, so two threshold crossings in one step are impossible."
+    },
+    {
+      "id": "G4",
+      "name": "population ceiling pop<=3",
+      "detail": "same arithmetic as G1; the implementation must confirm the observed max pop over all reachable non-goal states for t<=H."
+    },
+    {
+      "id": "G5",
+      "name": "idle civilians are a safe relaxation",
+      "detail": "|work| < pop enlarges the action set, so a lower bound proved with it still holds; with R-SET-9 IDLE only forfeits progress, so the achievability witness must be idle-free."
+    },
+    {
+      "id": "G6",
+      "name": "scale sufficiency (premises added in v2.1)",
+      "detail": "Multipliers act exactly once per step on that step's yield, never on accumulated state. Given G2 and tier in {Happy, Content} for amenityStock in {1,2} (so req(p) <= 1 for p <= 3): surplus d in {0,100,200} -> e in {0,110,220}; production P in {300..700} (sum of tile production <= 400) -> P*21/20 in {315..735}; all integers in 1/100, closed under integer addition. A Displeased tier combined with a 0.50 housing factor (e = 42.5) would break the grid; G2/G3 and amenityStock in {1,2} exclude it."
+    }
+  ],
+  "fixedNonCandidateSettings": [
+    {
+      "id": "starvation",
+      "value": "illegal",
+      "tag": "[RESTRICTION]",
+      "note": "Post-modifier surplus < 0 is not an action. Restriction class: it removes actions, so it can only raise N and cannot carry a real-game lower bound; inert here only because at pop 1-3 the max-production assignment is food-neutral or better (PH d=100, PH+P d=0, GH+PH+P d=0) and pop 4 has no legal action. Inertness is obligation O8, not an assumption.",
+      "class": "restriction"
+    },
+    {
+      "id": "progressBanking",
+      "value": "forbidden",
+      "tag": "[I]",
+      "note": "R-SET-9 / FIX-1: no credit at pop 1 and none on IDLE steps. The no-carry-across-idle-step rule is a second RESTRICTION (it can only raise N); a <= q carry would move N to 19/24 (outside the box)."
+    },
+    {
+      "id": "idle",
+      "value": "allow",
+      "note": "relaxation end; dominated under R-SET-9 (G5)"
+    },
+    {
+      "id": "multiGrowth",
+      "value": "off",
+      "note": "inert (G3)"
+    },
+    {
+      "id": "growthBase",
+      "value": "surplus",
+      "note": "R-GROW-4"
+    },
+    {
+      "id": "growthRounding",
+      "value": "exact",
+      "note": "identical to trunc10 on every value this scenario produces (0/110/220)"
+    },
+    {
+      "id": "postCompletionGrowth",
+      "value": "not modelled",
+      "note": "the Goal depends only on 'trained'"
+    },
+    {
+      "id": "basketOnSettler",
+      "value": "keep",
+      "note": "post-goal state only"
+    },
+    {
+      "id": "centerHills",
+      "value": "not applicable",
+      "note": "flat centre by precondition"
+    },
+    {
+      "id": "costProgressionParam1",
+      "value": "inert",
+      "note": "only the first trained settler (k=0)"
+    },
+    {
+      "id": "foundingTurn",
+      "value": "not modelled",
+      "note": "steps after the founding snapshot; UI turn mapping not claimed"
+    }
+  ],
+  "assumptions": [
+    {
+      "id": "A1",
+      "statement": "palace grants +2 production",
+      "tag": "[C]",
+      "falsifier": "FX-CAL",
+      "impact": "if 1: every N changes, bump to v3"
+    },
+    {
+      "id": "A2",
+      "statement": "the Happy +5% multiplies the full city production",
+      "tag": "[I]",
+      "falsifier": "FX-CAL",
+      "impact": "-0.15..-0.30 P/step"
+    },
+    {
+      "id": "A3",
+      "statement": "T(1)=15 and T(2)=24 are exact",
+      "tag": "[C]+[D*]",
+      "falsifier": "FX-TH",
+      "impact": "at most +1 step"
+    },
+    {
+      "id": "A4",
+      "statement": "basket starts at 0; founding settlement out of scope",
+      "tag": "[ASSUME]",
+      "falsifier": "FX-FOUND",
+      "impact": "shifts t by 1"
+    },
+    {
+      "id": "A5",
+      "statement": "no difficulty/civ modifier on the modelled quantities",
+      "tag": "[U]",
+      "falsifier": "FX-DIFF",
+      "impact": "capability exclusion"
+    },
+    {
+      "id": "A6",
+      "statement": "the 4 tiles carry no resource/feature/bonus",
+      "tag": "[SCENARIO]",
+      "falsifier": "map check",
+      "impact": "different sigma"
+    },
+    {
+      "id": "A7",
+      "statement": "the city keeps growing while a settler is built",
+      "tag": "[C-weak]",
+      "falsifier": "FX-SG",
+      "impact": "structural rewrite"
+    },
+    {
+      "id": "A8",
+      "statement": "the build target is fixed for a step at its start; a same-step growth does not retro-legalise SETTLER",
+      "tag": "[ASSUME]",
+      "falsifier": "FX-ORD-a",
+      "impact": "at most 1 step (new in v2, FIX-2)"
+    }
+  ],
+  "exclusions": [
+    {
+      "id": "X1",
+      "item": "gold/faith purchase",
+      "type": "capability"
+    },
+    {
+      "id": "X3",
+      "item": "chops/harvests",
+      "type": "capability"
+    },
+    {
+      "id": "X5",
+      "item": "policy cards Urban Planning (+1 P) and Colonization (+50% settler P)",
+      "type": "capability"
+    },
+    {
+      "id": "X6",
+      "item": "civics/governments/other policies",
+      "type": "capability"
+    },
+    {
+      "id": "X7",
+      "item": "builders and improvements",
+      "type": "capability"
+    },
+    {
+      "id": "X8",
+      "item": "pantheon/religion",
+      "type": "capability"
+    },
+    {
+      "id": "X9",
+      "item": "tribal villages",
+      "type": "capability"
+    },
+    {
+      "id": "X10",
+      "item": "border growth / tile purchase",
+      "type": "capability"
+    },
+    {
+      "id": "X11",
+      "item": "settler movement and a second city",
+      "type": "capability"
+    },
+    {
+      "id": "X12",
+      "item": "trade routes",
+      "type": "capability"
+    },
+    {
+      "id": "X13",
+      "item": "city-states/envoys",
+      "type": "capability"
+    },
+    {
+      "id": "X14",
+      "item": "great people",
+      "type": "capability"
+    },
+    {
+      "id": "X15",
+      "item": "wonders",
+      "type": "capability"
+    },
+    {
+      "id": "X16",
+      "item": "difficulty/mode/expansion modifiers",
+      "type": "capability"
+    },
+    {
+      "id": "X17",
+      "item": "civ/leader abilities",
+      "type": "capability"
+    },
+    {
+      "id": "X18",
+      "item": "barbarians/enemies/disasters/pillaging",
+      "type": "relaxation",
+      "note": "safe: excluding them can only speed the model up"
+    },
+    {
+      "id": "X19",
+      "item": "other build targets",
+      "type": "covered by IDLE",
+      "note": "IDLE's legitimacy depends on the X4-X7 exclusions; under R-SET-9 IDLE credits nothing"
+    },
+    {
+      "id": "X20",
+      "item": "starting era above Ancient",
+      "type": "capability"
+    }
+  ],
+  "obligations": [
+    {
+      "id": "O1",
+      "statement": "reach 0 = {s0}; reach (t+1) = union over s in reach t, a in allActions s of step s a; dedup inside a layer only"
+    },
+    {
+      "id": "O2",
+      "statement": "legal s a <-> a in allActions s, with allActions generated from powerset (work x extra x build)"
+    },
+    {
+      "id": "O2b",
+      "statement": "legal := step.isSome, and step_total : legal c s a -> exists s', step c s a = some s'"
+    },
+    {
+      "id": "O3",
+      "statement": "reach sound and complete against ReachableAt"
+    },
+    {
+      "id": "O4",
+      "statement": "no_goal_before: for all t < N and all s in reach t, trained s = 0"
+    },
+    {
+      "id": "O5",
+      "statement": "witness playout of length N, idle-free, with prog = 0 until the first step whose pre-turn pop >= 2"
+    },
+    {
+      "id": "O6",
+      "statement": "OptimalAt theta N for each certified theta; axiom audit clean (no sorryAx, no undisclosed native_decide)"
+    },
+    {
+      "id": "O6b",
+      "statement": "horizonOk: N(theta) <= H = 34 for every theta in the box"
+    },
+    {
+      "id": "O7",
+      "statement": "certified claims limited to argmin and argmax theta; the other 126 combos and the interval are search estimates until all 128 are certified or an inertness lemma for C2-C7 is proved"
+    },
+    {
+      "id": "O8",
+      "statement": "re-derive G1/G4 and the inertness of both restriction-class rules by enumeration per certified theta; own every measured maximum (max pop, max pop-3 food, layer sizes)"
+    },
+    {
+      "id": "O9",
+      "statement": "report per-axis marginal N sets, name inert axes, keep certified and estimated numbers apart"
+    },
+    {
+      "id": "O10",
+      "statement": "any disagreement with predictions stops the work and is reported; no silent contract edits"
+    }
+  ],
+  "predictions": {
+    "status": "analyst prediction under v2.1 semantics, exact-step enumeration over all 128 theta; unverified, not a proof",
+    "interval": {
+      "min": 20,
+      "max": 25,
+      "distinctValues": [
+        20,
+        25
+      ],
+      "label": "search estimate over the box, conditional on assumptions A1/A2/A8 and on the no-carry restriction; NOT a certified interval"
+    },
+    "perAxisMarginal": {
+      "settlerCost": {
+        "80": [
+          20
+        ],
+        "110": [
+          25
+        ]
+      },
+      "turnOrder": {
+        "growth_first": [
+          20,
+          25
+        ],
+        "production_first": [
+          20,
+          25
+        ]
+      },
+      "newCitizen": {
+        "best": [
+          20,
+          25
+        ],
+        "none": [
+          20,
+          25
+        ]
+      },
+      "amenityStock": {
+        "1": [
+          20,
+          25
+        ],
+        "2": [
+          20,
+          25
+        ]
+      },
+      "basketOnGrowth": {
+        "subtract": [
+          20,
+          25
+        ],
+        "zero": [
+          20,
+          25
+        ]
+      },
+      "productionRounding": {
+        "exact": [
+          20,
+          25
+        ],
+        "trunc10": [
+          20,
+          25
+        ]
+      },
+      "thresholdRounding": {
+        "exact": [
+          20,
+          25
+        ],
+        "floor": [
+          20,
+          25
+        ]
+      }
+    },
+    "predictedInertAxes": [
+      "turnOrder",
+      "newCitizen",
+      "amenityStock",
+      "basketOnGrowth",
+      "productionRounding",
+      "thresholdRounding"
+    ],
+    "baselineTheta": {
+      "settlerCost": 80,
+      "turnOrder": "growth_first",
+      "newCitizen": "best",
+      "amenityStock": 2,
+      "basketOnGrowth": "zero",
+      "productionRounding": "exact",
+      "thresholdRounding": "exact",
+      "predictedN": 20
+    },
+    "certifiedTargets": [
+      {
+        "role": "argmin",
+        "theta": {
+          "settlerCost": 80,
+          "turnOrder": "growth_first",
+          "newCitizen": "best",
+          "amenityStock": 2,
+          "basketOnGrowth": "zero",
+          "productionRounding": "exact",
+          "thresholdRounding": "exact"
+        },
+        "predictedN": 20
+      },
+      {
+        "role": "argmax",
+        "theta": {
+          "settlerCost": 110,
+          "turnOrder": "growth_first",
+          "newCitizen": "best",
+          "amenityStock": 2,
+          "basketOnGrowth": "zero",
+          "productionRounding": "exact",
+          "thresholdRounding": "exact"
+        },
+        "predictedN": 25
+      }
+    ],
+    "selfCheckTrace": [
+      {
+        "t": "1-7",
+        "prePop": 1,
+        "work": [
+          "GH"
+        ],
+        "extra": null,
+        "build": "IDLE",
+        "F": 400,
+        "P": 400,
+        "e": 220,
+        "q": 420,
+        "qCredited": 0,
+        "food": "0 -> 1540 in 220/step; growth at t=7 (1540 >= T(1)=1500); basket emptied, 40 discarded",
+        "prog": "0 (IDLE credits nothing; SETTLER is not legal at pre-turn pop 1)",
+        "note": "q = 420 = 400*1.05, NOT 525 (525 is PH's P=500 line) - corrected in v2.1 (B1)"
+      },
+      {
+        "t": "8-19",
+        "prePop": 2,
+        "work": [
+          "GH",
+          "PH"
+        ],
+        "extra": null,
+        "build": "SETTLER",
+        "F": 500,
+        "P": 600,
+        "e": 110,
+        "q": 630,
+        "qCredited": 630,
+        "food": "110 -> 1320",
+        "prog": "630 -> 7560"
+      },
+      {
+        "t": 20,
+        "prePop": 2,
+        "work": [
+          "GH",
+          "PH"
+        ],
+        "extra": null,
+        "build": "SETTLER",
+        "F": 500,
+        "P": 600,
+        "e": 110,
+        "q": 630,
+        "qCredited": 630,
+        "food": "1430 (no pop-3 growth; 1430 < T(2)=2400)",
+        "prog": "7560+630 = 8190 >= 8000 => GOAL; pop 2->1; overflow 190"
+      }
+    ],
+    "cost110Trace": "same prefix, then GH,PH x18 with SETTLER: prog 10710 at t=24 (< 11000), 11340 at t=25 => N=25",
+    "closedForm": {
+      "statement": "N(theta) = 7 + ceil(cost/630) observed for all 128 theta (20 and 25)",
+      "status": "observed, NOT proved",
+      "proofSketch": {
+        "i": "prog = 0 for t <= 7: SETTLER is illegal below pop 2 and pop 2 needs ceil(1500/220) = 7 steps",
+        "ii": "at pop 2, q <= 630, hence N >= 7 + ceil(cost/630)",
+        "iii": "pop-3 branch UNPROVED: reaching pop 3 costs >= 11 steps at pop 2 where food and production compete for the same two citizens (G+GH: food 220, q = 420; GH+PH: food 110, q = 630); a closed form needs an LP/dominance lemma over the 2-citizen assignments"
+      },
+      "warning": "the pop-3 completion figures 22/26 quoted in mvp/SEMANTIC-REVIEW.md are consistent but are not evidence and must not be quoted as proof"
+    },
+    "outsideBoxSensitivities": {
+      "status": "assumption dependence, NOT interval width; all within H = 34",
+      "A1_palaceProduction": {
+        "+0": [
+          27,
+          33
+        ],
+        "+1": [
+          23,
+          28
+        ],
+        "+3": [
+          18,
+          22
+        ],
+        "method": "re-run of the v2.1 model"
+      },
+      "A2_tileYieldsOnly": {
+        "N": [
+          21,
+          25
+        ],
+        "method": "closed form with q = 615 (13*615 = 7995 < 8000), not enumerated"
+      }
+    },
+    "invalidated": {
+      "v1Predictions": [
+        15,
+        16,
+        20
+      ],
+      "reason": "v1 credited settler progress during IDLE steps and at pop 1 (production banking across PrereqPopulation=2); FIX-1/FIX-2 make those numbers, the v1 witness and the v1 handBoundWarning void",
+      "handBound": "v1's 6930 was banked progress under v1 semantics; no v2 line holds it, so its '24' branch is not a v2 result",
+      "action": "do not reuse any v1 number"
+    },
+    "scale": {
+      "maxLayerObserved": 20972,
+      "maxPop": 3,
+      "maxFoodPop3": {
+        "note": "analytic ceiling 110*(H-18)+219 = 1979 < 3300; per-combo measurements are O8-owned",
+        "analystMeasured": {
+          "cost80": {
+            "zero": 100,
+            "subtract": 170
+          },
+          "cost110": {
+            "zero": 600,
+            "subtract": 670
+          }
+        }
+      }
+    }
+  },
+  "blockers": [
+    {
+      "id": "K0",
+      "item": "no Civ6 build on this machine => [V]=0, [D*] cannot be upgraded, no fixture can be run"
+    },
+    {
+      "id": "FX-SET-BASE",
+      "item": "first settler 80 vs 110",
+      "value": "5 steps of the envelope"
+    },
+    {
+      "id": "FX-ORD-a",
+      "item": "growth and completion in the same settlement; also tests A8 selection timing"
+    },
+    {
+      "id": "FX-ORD-c",
+      "item": "does the new citizen's tile count in the growth settlement"
+    },
+    {
+      "id": "FX-CAL",
+      "item": "city centre + palace baseline",
+      "value": "A1 and A2"
+    },
+    {
+      "id": "FX-AM1",
+      "item": "pop 1-2 shows 2.2 food and 3.15 production"
+    },
+    {
+      "id": "FX-AM3",
+      "item": "amenity tier at pop 3",
+      "value": "C4 (inert in this scenario, needed for any pop>=3 scenario)"
+    },
+    {
+      "id": "FX-TH",
+      "item": "T(3) value now that pop 3 is reachable"
+    },
+    {
+      "id": "FX-PROD-FRAC",
+      "item": "is accumulated production truncated to 0.1"
+    }
+  ],
+  "unresolvedDesignChoices": [
+    "A8 false (build chosen after the growth phase): measured 19/24; OUTSIDE the box by name - adopting it is a new contract version, not a wider interval",
+    "idle/queue carry (an unmodelled build's overflow reaching the settler, <= q): measured 19/24; excluded by the no-carry restriction, which can only raise N",
+    "progress at pop < 2 is uncredited (never arises as a mid-flight drop here)",
+    "T(3) has only the two readings in C7; a third (internal float) would be a new axis",
+    "turn<->step offset (FX-FOUND) is not claimed"
+  ],
+  "nonClaims": [
+    "not a Civ6 fact: [V]=0, no build hash, no fixture run",
+    "not the real-game minimum number of turns for the first settler",
+    "every N is model-internal and conditional on A1-A8",
+    "the bound holds only for the restricted action set (X1-X17, X19, X20) and the restriction-class rules",
+    "IDLE legitimacy depends on the X4-X7 exclusions",
+    "the [20,25] interval is a search estimate, and A8-false / idle-carry variants (19/24) are outside the box and not part of it"
+  ],
+  "contractVersion": "v2.1",
+  "baselineInterface": {
+    "purpose": "Frozen interface for Python and Lean implementers. Do not fork; the box axes are the only legal variation.",
+    "model": "M_MVP(theta, sigma) = (State, Action, step : State -> Action -> Option State, legal s a := (step s a).isSome, Goal s := trained s >= 1, allActions s : Finset Action)",
+    "theta": {
+      "settlerCost": 80,
+      "turnOrder": "growth_first",
+      "newCitizen": "best",
+      "amenityStock": 2,
+      "basketOnGrowth": "zero",
+      "productionRounding": "exact",
+      "thresholdRounding": "exact"
+    },
+    "sigma": "sigma-capital-4tiles-v1",
+    "scale": "1/100 integers",
+    "horizon": 34,
+    "horizonOk": "N(theta) <= H for every theta in the box",
+    "frozenChoices": [
+      "pre-turn selection (A8)",
+      "extra = none under IDLE",
+      "extraGain(none) = 0",
+      "no progress before pop 2 and none on IDLE (R-SET-9)",
+      "starvation illegal",
+      "housing x1.00 (G2)",
+      "pop <= 3 (G1)"
+    ],
+    "deliverables": [
+      "step / legal / allActions from powerset",
+      "reach layers (exact-step, per-layer dedup)",
+      "witness for baseline theta (idle-free, prog = 0 until pre-turn pop >= 2)",
+      "OptimalAt for baseline theta and for the cost-110 twin",
+      "per-theta N table for all 128 theta labelled ESTIMATE"
+    ],
+    "hardRule": "Never mix a certified number with an estimated number in one column (obligation O7)."
+  },
+  "corrections_v2_1": [
+    {
+      "id": "B1",
+      "was": "prod(extra) was applied with extra = none forced under IDLE (partial function at the witness growth step); witness row also showed q=525 for GH",
+      "now": "extraGain(e) = 0 if e = none else prod(e), total in both branches; witness regenerated from the model: GH at pop 1 gives P=400 -> q=420",
+      "effect": "no N changes; the step function is now total and the trace reproduces from §4"
+    },
+    {
+      "id": "B2",
+      "was": "handBoundWarning reused v1's banked 6930 and inferred a missing coupling ('... = 24 where the enumeration says 25')",
+      "now": "replaced by the observed closed form 7+ceil(cost/630) plus an explicitly UNPROVED pop-3 branch with the intended LP/dominance proof approach",
+      "effect": "no v1 residue; the '24' branch is no longer presented as a v2 result"
+    },
+    {
+      "id": "B4",
+      "was": "G1 called C7 'an active axis' while its own ceiling argument proves it cannot fire; and reported a measured max pop-3 food of 720",
+      "now": "G1 proves T(3) is never crossed (analytic ceiling 1979 < 3300) so C7 is INERT BY PROOF; measured maxima are O8-owned and labelled uncertified",
+      "effect": "labels only; box unchanged"
+    },
+    {
+      "id": "B5",
+      "was": "H=27 fails for plausible A1 readings (palace +0 -> 33, +1 -> 28) at cost 110",
+      "now": "H = 34 plus obligation horizonOk; A1/A2 sensitivities listed as OUTSIDE-BOX assumption dependence, not interval width",
+      "effect": "no N changes; interval stays [20,25] and is explicitly conditional"
+    },
+    {
+      "id": "B9",
+      "was": "legal was defined through the pipeline's surplus and then asserted legal <-> step != none (circular)",
+      "now": "legal := step.isSome as the single source of truth, with step_total as obligation O2b",
+      "effect": "definition only"
+    },
+    {
+      "id": "B7",
+      "was": "G6 enumerated e in {0,110,220} without premises and used P <= 800",
+      "now": "premises stated (G2 + tier in {Happy,Content} for amenityStock in {1,2}); P <= 700 (sum of tile production <= 400); the Displeased-times-0.50 counterexample named",
+      "effect": "argument only"
+    },
+    {
+      "id": "B6",
+      "was": "starvation called 'a model restriction' but left outside the taxonomy",
+      "now": "classified as a restriction class (can only raise N, cannot carry a real-game bound), with an inertness obligation and the no-carry variant named",
+      "effect": "classification only"
+    }
+  ],
+  "changelog": [
+    {
+      "version": "v1",
+      "change": "first contract; credited settler progress during IDLE and pop-1 steps (INVALID)"
+    },
+    {
+      "version": "v2",
+      "change": "R-SET-9 CREDIT, pre-turn selection (A8), extra rules, C7 added, 128 combos, interval relabelled estimate"
+    },
+    {
+      "version": "v2.1",
+      "change": "totalised extraGain, witness q 525->420, closed form replaces handBoundWarning with an unproved pop-3 branch, analytic ceilings replace measured food maxima, C7 inert-by-proof, H 27->34 + horizonOk, G6 premises/P<=700, legal := step.isSome + step_total, starvation classified, frozen §0 baseline interface"
+    }
+  ]
+}
