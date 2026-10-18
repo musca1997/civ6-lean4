@@ -23,6 +23,9 @@ import Civ6Verify.Scenarios.Synthetic
 import Civ6Verify.Model.Mvp
 import Civ6Verify.Bounds.MvpArithmetic
 import Civ6Verify.Bounds.MvpOptimality
+import Civ6Verify.Scenarios.UrbanPlanning
+import Civ6Verify.Robustness.Candidates
+import Civ6Verify.Bounds.CostFrontier
 
 namespace Civ6Verify
 

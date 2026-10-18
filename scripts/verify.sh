@@ -191,6 +191,11 @@ run_step "Python MVP executable self-tests" python3 search/mvp.py --self-test
 run_step "MVP fixture replay" python3 search/mvp.py --check-fixture
 run_step "MVP Lean-vs-Python/fixture cross-check" \
   python3 scripts/check-mvp.py --no-build --self-test
+run_step "Policy variant self-tests" python3 search/policy.py --self-test
+run_step "Policy fixture replay" python3 search/policy.py --check-fixture
+run_step "Policy Lean probe" python3 search/policy.py --lean-probe
+run_step "Cost-frontier self-tests" python3 search/cost_frontier.py --self-test
+run_step "Cost-frontier fixture replay" python3 search/cost_frontier.py --check-fixture
 run_step "Theorem axiom audit" python3 scripts/audit-axioms.py --no-build
 
 printf '\nverify: PASS\n'

@@ -1,0 +1,1738 @@
+{
+  "fixtureId": "policy-breakthrough-v1",
+  "version": 1,
+  "kind": "policy-variant-executable",
+  "untrusted": true,
+  "gameFactClaim": false,
+  "owner": "policy breakthrough task",
+  "policyVariant": {
+    "id": "urban-planning-plus1-base-production",
+    "effect": "+1 base city production (Urban Planning), applied as baseProd 300 -> 400",
+    "bonusUnits": 100,
+    "baselineBaseProduction": 300,
+    "policyBaseProduction": 400,
+    "appliedBefore": "prodMult (Happy 105): q = (400 + workProd + growthExtra) * 105 / 100",
+    "sharedCodePath": "search/mvp.py via Scenario.base_prod swap only; legality/growth reused verbatim"
+  },
+  "conditionalAssumptions": [
+    {
+      "id": "POLICY-ASSUME",
+      "text": "Urban Planning is in effect from t=0 and adds +1 base city production (+100 in 1/100 units) to baseProd = 300 + workProd, before prodMult."
+    },
+    {
+      "id": "INHERIT-MVP",
+      "text": "The variant inherits every M_MVP v2.1 conditional assumption verbatim (A1/A2/A8, growth_first, newCitizen=best, amenityStock=2, basketOnGrowth=zero, productionRounding=exact, thresholdRounding=exact, no progress before pop 2 or on IDLE, starvation illegal, extraGain(none)=0, extra never feeds food)."
+    },
+    {
+      "id": "UNLOCK-NOT-MODELLED",
+      "text": "Civics, culture, policy slots and the policy's unlock cost are NOT modelled. The variant does not say the policy is free; it is an explicit conditional assumption."
+    },
+    {
+      "id": "NOT-A-FULLGAME-COMPARISON",
+      "text": "This is a comparison of two conditional models that differ only by the +100 production term. It is not a full-game comparison and not a Civ6 claim."
+    }
+  ],
+  "notClaimed": [
+    "No Civilization VI fact: [V] = 0, no build pinned, no fixture run in game.",
+    "No claim that the policy is unlocked for free or at t=0 in the real game.",
+    "No claim that N=18 (cost 80) or N=22 (cost 110) is optimal for the policy variant; only achievability is proved in Lean and paired with the baseline lower bound.",
+    "No full-game comparison: no culture, no civics tree, no opportunity cost of the policy slot.",
+    "No claim about any other theta axis; only the cost axis is instantiated (80/110)."
+  ],
+  "leanAnchors": {
+    "module": "Civ6Verify/Scenarios/UrbanPlanning.lean",
+    "theorems": {
+      "bonus_zero_eq_baseline_step": "Civ6Verify.Scenarios.UrbanPlanning.bonusStep_zero",
+      "policy_model": "Civ6Verify.Scenarios.UrbanPlanning.policyModel",
+      "policy_achievable_18": "Civ6Verify.Scenarios.UrbanPlanning.policy_achievable_18",
+      "policy_achievable_22": "Civ6Verify.Scenarios.UrbanPlanning.policy_achievable_22",
+      "baseline_lower_bound_20": "Civ6Verify.Bounds.MvpOptimality.noEarlier_20",
+      "baseline_lower_bound_25": "Civ6Verify.Bounds.MvpOptimality.noEarlier_25",
+      "breakthrough": "Civ6Verify.Scenarios.UrbanPlanning.urbanPlanning_breakthrough"
+    },
+    "expected": {
+      "policyN80": 18,
+      "policyN110": 22,
+      "baselineN80": 20,
+      "baselineN110": 25
+    }
+  },
+  "baseline": {
+    "theta": {
+      "settlerCost": 80,
+      "turnOrder": "growth_first",
+      "newCitizen": "best",
+      "amenityStock": 2,
+      "basketOnGrowth": "zero",
+      "productionRounding": "exact",
+      "thresholdRounding": "exact"
+    },
+    "n": 20,
+    "layerSizes": [
+      1,
+      3,
+      5,
+      7,
+      9,
+      11,
+      13,
+      15,
+      24,
+      55,
+      109,
+      185,
+      283,
+      403,
+      545,
+      709,
+      895,
+      1103,
+      1355,
+      1586,
+      1809
+    ]
+  },
+  "policy": {
+    "theta": {
+      "settlerCost": 80,
+      "turnOrder": "growth_first",
+      "newCitizen": "best",
+      "amenityStock": 2,
+      "basketOnGrowth": "zero",
+      "productionRounding": "exact",
+      "thresholdRounding": "exact"
+    },
+    "n": 18,
+    "goalState": [
+      1,
+      0,
+      85,
+      1
+    ],
+    "layerSizes": [
+      1,
+      3,
+      5,
+      7,
+      9,
+      11,
+      13,
+      15,
+      24,
+      56,
+      117,
+      204,
+      317,
+      456,
+      621,
+      812,
+      1029,
+      1272,
+      1563
+    ],
+    "witnessKind": "contract-style Lean witness: 7x GH IDLE then kx (GH+PH) SETTLER",
+    "witnessActions": [
+      {
+        "workMask": 2,
+        "extra": null,
+        "build": "IDLE"
+      },
+      {
+        "workMask": 2,
+        "extra": null,
+        "build": "IDLE"
+      },
+      {
+        "workMask": 2,
+        "extra": null,
+        "build": "IDLE"
+      },
+      {
+        "workMask": 2,
+        "extra": null,
+        "build": "IDLE"
+      },
+      {
+        "workMask": 2,
+        "extra": null,
+        "build": "IDLE"
+      },
+      {
+        "workMask": 2,
+        "extra": null,
+        "build": "IDLE"
+      },
+      {
+        "workMask": 2,
+        "extra": null,
+        "build": "IDLE"
+      },
+      {
+        "workMask": 6,
+        "extra": null,
+        "build": "SETTLER"
+      },
+      {
+        "workMask": 6,
+        "extra": null,
+        "build": "SETTLER"
+      },
+      {
+        "workMask": 6,
+        "extra": null,
+        "build": "SETTLER"
+      },
+      {
+        "workMask": 6,
+        "extra": null,
+        "build": "SETTLER"
+      },
+      {
+        "workMask": 6,
+        "extra": null,
+        "build": "SETTLER"
+      },
+      {
+        "workMask": 6,
+        "extra": null,
+        "build": "SETTLER"
+      },
+      {
+        "workMask": 6,
+        "extra": null,
+        "build": "SETTLER"
+      },
+      {
+        "workMask": 6,
+        "extra": null,
+        "build": "SETTLER"
+      },
+      {
+        "workMask": 6,
+        "extra": null,
+        "build": "SETTLER"
+      },
+      {
+        "workMask": 6,
+        "extra": null,
+        "build": "SETTLER"
+      },
+      {
+        "workMask": 6,
+        "extra": null,
+        "build": "SETTLER"
+      }
+    ],
+    "witness": [
+      {
+        "t": 1,
+        "pre": [
+          1,
+          0,
+          0,
+          0
+        ],
+        "action": {
+          "work": [
+            "GH"
+          ],
+          "workMask": 2,
+          "extra": null,
+          "build": "IDLE"
+        },
+        "F": 400,
+        "P": 500,
+        "d": 200,
+        "e": 220,
+        "grew": false,
+        "q": 525,
+        "credited": 0,
+        "completed": false,
+        "extraProd": 0,
+        "post": [
+          1,
+          220,
+          0,
+          0
+        ]
+      },
+      {
+        "t": 2,
+        "pre": [
+          1,
+          220,
+          0,
+          0
+        ],
+        "action": {
+          "work": [
+            "GH"
+          ],
+          "workMask": 2,
+          "extra": null,
+          "build": "IDLE"
+        },
+        "F": 400,
+        "P": 500,
+        "d": 200,
+        "e": 220,
+        "grew": false,
+        "q": 525,
+        "credited": 0,
+        "completed": false,
+        "extraProd": 0,
+        "post": [
+          1,
+          440,
+          0,
+          0
+        ]
+      },
+      {
+        "t": 3,
+        "pre": [
+          1,
+          440,
+          0,
+          0
+        ],
+        "action": {
+          "work": [
+            "GH"
+          ],
+          "workMask": 2,
+          "extra": null,
+          "build": "IDLE"
+        },
+        "F": 400,
+        "P": 500,
+        "d": 200,
+        "e": 220,
+        "grew": false,
+        "q": 525,
+        "credited": 0,
+        "completed": false,
+        "extraProd": 0,
+        "post": [
+          1,
+          660,
+          0,
+          0
+        ]
+      },
+      {
+        "t": 4,
+        "pre": [
+          1,
+          660,
+          0,
+          0
+        ],
+        "action": {
+          "work": [
+            "GH"
+          ],
+          "workMask": 2,
+          "extra": null,
+          "build": "IDLE"
+        },
+        "F": 400,
+        "P": 500,
+        "d": 200,
+        "e": 220,
+        "grew": false,
+        "q": 525,
+        "credited": 0,
+        "completed": false,
+        "extraProd": 0,
+        "post": [
+          1,
+          880,
+          0,
+          0
+        ]
+      },
+      {
+        "t": 5,
+        "pre": [
+          1,
+          880,
+          0,
+          0
+        ],
+        "action": {
+          "work": [
+            "GH"
+          ],
+          "workMask": 2,
+          "extra": null,
+          "build": "IDLE"
+        },
+        "F": 400,
+        "P": 500,
+        "d": 200,
+        "e": 220,
+        "grew": false,
+        "q": 525,
+        "credited": 0,
+        "completed": false,
+        "extraProd": 0,
+        "post": [
+          1,
+          1100,
+          0,
+          0
+        ]
+      },
+      {
+        "t": 6,
+        "pre": [
+          1,
+          1100,
+          0,
+          0
+        ],
+        "action": {
+          "work": [
+            "GH"
+          ],
+          "workMask": 2,
+          "extra": null,
+          "build": "IDLE"
+        },
+        "F": 400,
+        "P": 500,
+        "d": 200,
+        "e": 220,
+        "grew": false,
+        "q": 525,
+        "credited": 0,
+        "completed": false,
+        "extraProd": 0,
+        "post": [
+          1,
+          1320,
+          0,
+          0
+        ]
+      },
+      {
+        "t": 7,
+        "pre": [
+          1,
+          1320,
+          0,
+          0
+        ],
+        "action": {
+          "work": [
+            "GH"
+          ],
+          "workMask": 2,
+          "extra": null,
+          "build": "IDLE"
+        },
+        "F": 400,
+        "P": 500,
+        "d": 200,
+        "e": 220,
+        "grew": true,
+        "q": 525,
+        "credited": 0,
+        "completed": false,
+        "extraProd": 0,
+        "post": [
+          2,
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "t": 8,
+        "pre": [
+          2,
+          0,
+          0,
+          0
+        ],
+        "action": {
+          "work": [
+            "GH",
+            "PH"
+          ],
+          "workMask": 6,
+          "extra": null,
+          "build": "SETTLER"
+        },
+        "F": 500,
+        "P": 700,
+        "d": 100,
+        "e": 110,
+        "grew": false,
+        "q": 735,
+        "credited": 735,
+        "completed": false,
+        "extraProd": 0,
+        "post": [
+          2,
+          110,
+          735,
+          0
+        ]
+      },
+      {
+        "t": 9,
+        "pre": [
+          2,
+          110,
+          735,
+          0
+        ],
+        "action": {
+          "work": [
+            "GH",
+            "PH"
+          ],
+          "workMask": 6,
+          "extra": null,
+          "build": "SETTLER"
+        },
+        "F": 500,
+        "P": 700,
+        "d": 100,
+        "e": 110,
+        "grew": false,
+        "q": 735,
+        "credited": 735,
+        "completed": false,
+        "extraProd": 0,
+        "post": [
+          2,
+          220,
+          1470,
+          0
+        ]
+      },
+      {
+        "t": 10,
+        "pre": [
+          2,
+          220,
+          1470,
+          0
+        ],
+        "action": {
+          "work": [
+            "GH",
+            "PH"
+          ],
+          "workMask": 6,
+          "extra": null,
+          "build": "SETTLER"
+        },
+        "F": 500,
+        "P": 700,
+        "d": 100,
+        "e": 110,
+        "grew": false,
+        "q": 735,
+        "credited": 735,
+        "completed": false,
+        "extraProd": 0,
+        "post": [
+          2,
+          330,
+          2205,
+          0
+        ]
+      },
+      {
+        "t": 11,
+        "pre": [
+          2,
+          330,
+          2205,
+          0
+        ],
+        "action": {
+          "work": [
+            "GH",
+            "PH"
+          ],
+          "workMask": 6,
+          "extra": null,
+          "build": "SETTLER"
+        },
+        "F": 500,
+        "P": 700,
+        "d": 100,
+        "e": 110,
+        "grew": false,
+        "q": 735,
+        "credited": 735,
+        "completed": false,
+        "extraProd": 0,
+        "post": [
+          2,
+          440,
+          2940,
+          0
+        ]
+      },
+      {
+        "t": 12,
+        "pre": [
+          2,
+          440,
+          2940,
+          0
+        ],
+        "action": {
+          "work": [
+            "GH",
+            "PH"
+          ],
+          "workMask": 6,
+          "extra": null,
+          "build": "SETTLER"
+        },
+        "F": 500,
+        "P": 700,
+        "d": 100,
+        "e": 110,
+        "grew": false,
+        "q": 735,
+        "credited": 735,
+        "completed": false,
+        "extraProd": 0,
+        "post": [
+          2,
+          550,
+          3675,
+          0
+        ]
+      },
+      {
+        "t": 13,
+        "pre": [
+          2,
+          550,
+          3675,
+          0
+        ],
+        "action": {
+          "work": [
+            "GH",
+            "PH"
+          ],
+          "workMask": 6,
+          "extra": null,
+          "build": "SETTLER"
+        },
+        "F": 500,
+        "P": 700,
+        "d": 100,
+        "e": 110,
+        "grew": false,
+        "q": 735,
+        "credited": 735,
+        "completed": false,
+        "extraProd": 0,
+        "post": [
+          2,
+          660,
+          4410,
+          0
+        ]
+      },
+      {
+        "t": 14,
+        "pre": [
+          2,
+          660,
+          4410,
+          0
+        ],
+        "action": {
+          "work": [
+            "GH",
+            "PH"
+          ],
+          "workMask": 6,
+          "extra": null,
+          "build": "SETTLER"
+        },
+        "F": 500,
+        "P": 700,
+        "d": 100,
+        "e": 110,
+        "grew": false,
+        "q": 735,
+        "credited": 735,
+        "completed": false,
+        "extraProd": 0,
+        "post": [
+          2,
+          770,
+          5145,
+          0
+        ]
+      },
+      {
+        "t": 15,
+        "pre": [
+          2,
+          770,
+          5145,
+          0
+        ],
+        "action": {
+          "work": [
+            "GH",
+            "PH"
+          ],
+          "workMask": 6,
+          "extra": null,
+          "build": "SETTLER"
+        },
+        "F": 500,
+        "P": 700,
+        "d": 100,
+        "e": 110,
+        "grew": false,
+        "q": 735,
+        "credited": 735,
+        "completed": false,
+        "extraProd": 0,
+        "post": [
+          2,
+          880,
+          5880,
+          0
+        ]
+      },
+      {
+        "t": 16,
+        "pre": [
+          2,
+          880,
+          5880,
+          0
+        ],
+        "action": {
+          "work": [
+            "GH",
+            "PH"
+          ],
+          "workMask": 6,
+          "extra": null,
+          "build": "SETTLER"
+        },
+        "F": 500,
+        "P": 700,
+        "d": 100,
+        "e": 110,
+        "grew": false,
+        "q": 735,
+        "credited": 735,
+        "completed": false,
+        "extraProd": 0,
+        "post": [
+          2,
+          990,
+          6615,
+          0
+        ]
+      },
+      {
+        "t": 17,
+        "pre": [
+          2,
+          990,
+          6615,
+          0
+        ],
+        "action": {
+          "work": [
+            "GH",
+            "PH"
+          ],
+          "workMask": 6,
+          "extra": null,
+          "build": "SETTLER"
+        },
+        "F": 500,
+        "P": 700,
+        "d": 100,
+        "e": 110,
+        "grew": false,
+        "q": 735,
+        "credited": 735,
+        "completed": false,
+        "extraProd": 0,
+        "post": [
+          2,
+          1100,
+          7350,
+          0
+        ]
+      },
+      {
+        "t": 18,
+        "pre": [
+          2,
+          1100,
+          7350,
+          0
+        ],
+        "action": {
+          "work": [
+            "GH",
+            "PH"
+          ],
+          "workMask": 6,
+          "extra": null,
+          "build": "SETTLER"
+        },
+        "F": 500,
+        "P": 700,
+        "d": 100,
+        "e": 110,
+        "grew": false,
+        "q": 735,
+        "credited": 735,
+        "completed": true,
+        "extraProd": 0,
+        "post": [
+          1,
+          1210,
+          85,
+          1
+        ]
+      }
+    ],
+    "witnessChecks": {
+      "length": 18,
+      "finalState": [
+        1,
+        1210,
+        85,
+        1
+      ],
+      "goal": true,
+      "idleFree": true,
+      "progZeroBeforePop2": true,
+      "nonnegativeSurplus": true,
+      "noGoalBeforeN": true,
+      "settlerPreturnLegal": true
+    }
+  },
+  "cost110": {
+    "baselineN": 25,
+    "policyN": 22,
+    "witnessActions": [
+      {
+        "workMask": 2,
+        "extra": null,
+        "build": "IDLE"
+      },
+      {
+        "workMask": 2,
+        "extra": null,
+        "build": "IDLE"
+      },
+      {
+        "workMask": 2,
+        "extra": null,
+        "build": "IDLE"
+      },
+      {
+        "workMask": 2,
+        "extra": null,
+        "build": "IDLE"
+      },
+      {
+        "workMask": 2,
+        "extra": null,
+        "build": "IDLE"
+      },
+      {
+        "workMask": 2,
+        "extra": null,
+        "build": "IDLE"
+      },
+      {
+        "workMask": 2,
+        "extra": null,
+        "build": "IDLE"
+      },
+      {
+        "workMask": 6,
+        "extra": null,
+        "build": "SETTLER"
+      },
+      {
+        "workMask": 6,
+        "extra": null,
+        "build": "SETTLER"
+      },
+      {
+        "workMask": 6,
+        "extra": null,
+        "build": "SETTLER"
+      },
+      {
+        "workMask": 6,
+        "extra": null,
+        "build": "SETTLER"
+      },
+      {
+        "workMask": 6,
+        "extra": null,
+        "build": "SETTLER"
+      },
+      {
+        "workMask": 6,
+        "extra": null,
+        "build": "SETTLER"
+      },
+      {
+        "workMask": 6,
+        "extra": null,
+        "build": "SETTLER"
+      },
+      {
+        "workMask": 6,
+        "extra": null,
+        "build": "SETTLER"
+      },
+      {
+        "workMask": 6,
+        "extra": null,
+        "build": "SETTLER"
+      },
+      {
+        "workMask": 6,
+        "extra": null,
+        "build": "SETTLER"
+      },
+      {
+        "workMask": 6,
+        "extra": null,
+        "build": "SETTLER"
+      },
+      {
+        "workMask": 6,
+        "extra": null,
+        "build": "SETTLER"
+      },
+      {
+        "workMask": 6,
+        "extra": null,
+        "build": "SETTLER"
+      },
+      {
+        "workMask": 6,
+        "extra": null,
+        "build": "SETTLER"
+      },
+      {
+        "workMask": 6,
+        "extra": null,
+        "build": "SETTLER"
+      }
+    ],
+    "witness": [
+      {
+        "t": 1,
+        "pre": [
+          1,
+          0,
+          0,
+          0
+        ],
+        "action": {
+          "work": [
+            "GH"
+          ],
+          "workMask": 2,
+          "extra": null,
+          "build": "IDLE"
+        },
+        "F": 400,
+        "P": 500,
+        "d": 200,
+        "e": 220,
+        "grew": false,
+        "q": 525,
+        "credited": 0,
+        "completed": false,
+        "extraProd": 0,
+        "post": [
+          1,
+          220,
+          0,
+          0
+        ]
+      },
+      {
+        "t": 2,
+        "pre": [
+          1,
+          220,
+          0,
+          0
+        ],
+        "action": {
+          "work": [
+            "GH"
+          ],
+          "workMask": 2,
+          "extra": null,
+          "build": "IDLE"
+        },
+        "F": 400,
+        "P": 500,
+        "d": 200,
+        "e": 220,
+        "grew": false,
+        "q": 525,
+        "credited": 0,
+        "completed": false,
+        "extraProd": 0,
+        "post": [
+          1,
+          440,
+          0,
+          0
+        ]
+      },
+      {
+        "t": 3,
+        "pre": [
+          1,
+          440,
+          0,
+          0
+        ],
+        "action": {
+          "work": [
+            "GH"
+          ],
+          "workMask": 2,
+          "extra": null,
+          "build": "IDLE"
+        },
+        "F": 400,
+        "P": 500,
+        "d": 200,
+        "e": 220,
+        "grew": false,
+        "q": 525,
+        "credited": 0,
+        "completed": false,
+        "extraProd": 0,
+        "post": [
+          1,
+          660,
+          0,
+          0
+        ]
+      },
+      {
+        "t": 4,
+        "pre": [
+          1,
+          660,
+          0,
+          0
+        ],
+        "action": {
+          "work": [
+            "GH"
+          ],
+          "workMask": 2,
+          "extra": null,
+          "build": "IDLE"
+        },
+        "F": 400,
+        "P": 500,
+        "d": 200,
+        "e": 220,
+        "grew": false,
+        "q": 525,
+        "credited": 0,
+        "completed": false,
+        "extraProd": 0,
+        "post": [
+          1,
+          880,
+          0,
+          0
+        ]
+      },
+      {
+        "t": 5,
+        "pre": [
+          1,
+          880,
+          0,
+          0
+        ],
+        "action": {
+          "work": [
+            "GH"
+          ],
+          "workMask": 2,
+          "extra": null,
+          "build": "IDLE"
+        },
+        "F": 400,
+        "P": 500,
+        "d": 200,
+        "e": 220,
+        "grew": false,
+        "q": 525,
+        "credited": 0,
+        "completed": false,
+        "extraProd": 0,
+        "post": [
+          1,
+          1100,
+          0,
+          0
+        ]
+      },
+      {
+        "t": 6,
+        "pre": [
+          1,
+          1100,
+          0,
+          0
+        ],
+        "action": {
+          "work": [
+            "GH"
+          ],
+          "workMask": 2,
+          "extra": null,
+          "build": "IDLE"
+        },
+        "F": 400,
+        "P": 500,
+        "d": 200,
+        "e": 220,
+        "grew": false,
+        "q": 525,
+        "credited": 0,
+        "completed": false,
+        "extraProd": 0,
+        "post": [
+          1,
+          1320,
+          0,
+          0
+        ]
+      },
+      {
+        "t": 7,
+        "pre": [
+          1,
+          1320,
+          0,
+          0
+        ],
+        "action": {
+          "work": [
+            "GH"
+          ],
+          "workMask": 2,
+          "extra": null,
+          "build": "IDLE"
+        },
+        "F": 400,
+        "P": 500,
+        "d": 200,
+        "e": 220,
+        "grew": true,
+        "q": 525,
+        "credited": 0,
+        "completed": false,
+        "extraProd": 0,
+        "post": [
+          2,
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "t": 8,
+        "pre": [
+          2,
+          0,
+          0,
+          0
+        ],
+        "action": {
+          "work": [
+            "GH",
+            "PH"
+          ],
+          "workMask": 6,
+          "extra": null,
+          "build": "SETTLER"
+        },
+        "F": 500,
+        "P": 700,
+        "d": 100,
+        "e": 110,
+        "grew": false,
+        "q": 735,
+        "credited": 735,
+        "completed": false,
+        "extraProd": 0,
+        "post": [
+          2,
+          110,
+          735,
+          0
+        ]
+      },
+      {
+        "t": 9,
+        "pre": [
+          2,
+          110,
+          735,
+          0
+        ],
+        "action": {
+          "work": [
+            "GH",
+            "PH"
+          ],
+          "workMask": 6,
+          "extra": null,
+          "build": "SETTLER"
+        },
+        "F": 500,
+        "P": 700,
+        "d": 100,
+        "e": 110,
+        "grew": false,
+        "q": 735,
+        "credited": 735,
+        "completed": false,
+        "extraProd": 0,
+        "post": [
+          2,
+          220,
+          1470,
+          0
+        ]
+      },
+      {
+        "t": 10,
+        "pre": [
+          2,
+          220,
+          1470,
+          0
+        ],
+        "action": {
+          "work": [
+            "GH",
+            "PH"
+          ],
+          "workMask": 6,
+          "extra": null,
+          "build": "SETTLER"
+        },
+        "F": 500,
+        "P": 700,
+        "d": 100,
+        "e": 110,
+        "grew": false,
+        "q": 735,
+        "credited": 735,
+        "completed": false,
+        "extraProd": 0,
+        "post": [
+          2,
+          330,
+          2205,
+          0
+        ]
+      },
+      {
+        "t": 11,
+        "pre": [
+          2,
+          330,
+          2205,
+          0
+        ],
+        "action": {
+          "work": [
+            "GH",
+            "PH"
+          ],
+          "workMask": 6,
+          "extra": null,
+          "build": "SETTLER"
+        },
+        "F": 500,
+        "P": 700,
+        "d": 100,
+        "e": 110,
+        "grew": false,
+        "q": 735,
+        "credited": 735,
+        "completed": false,
+        "extraProd": 0,
+        "post": [
+          2,
+          440,
+          2940,
+          0
+        ]
+      },
+      {
+        "t": 12,
+        "pre": [
+          2,
+          440,
+          2940,
+          0
+        ],
+        "action": {
+          "work": [
+            "GH",
+            "PH"
+          ],
+          "workMask": 6,
+          "extra": null,
+          "build": "SETTLER"
+        },
+        "F": 500,
+        "P": 700,
+        "d": 100,
+        "e": 110,
+        "grew": false,
+        "q": 735,
+        "credited": 735,
+        "completed": false,
+        "extraProd": 0,
+        "post": [
+          2,
+          550,
+          3675,
+          0
+        ]
+      },
+      {
+        "t": 13,
+        "pre": [
+          2,
+          550,
+          3675,
+          0
+        ],
+        "action": {
+          "work": [
+            "GH",
+            "PH"
+          ],
+          "workMask": 6,
+          "extra": null,
+          "build": "SETTLER"
+        },
+        "F": 500,
+        "P": 700,
+        "d": 100,
+        "e": 110,
+        "grew": false,
+        "q": 735,
+        "credited": 735,
+        "completed": false,
+        "extraProd": 0,
+        "post": [
+          2,
+          660,
+          4410,
+          0
+        ]
+      },
+      {
+        "t": 14,
+        "pre": [
+          2,
+          660,
+          4410,
+          0
+        ],
+        "action": {
+          "work": [
+            "GH",
+            "PH"
+          ],
+          "workMask": 6,
+          "extra": null,
+          "build": "SETTLER"
+        },
+        "F": 500,
+        "P": 700,
+        "d": 100,
+        "e": 110,
+        "grew": false,
+        "q": 735,
+        "credited": 735,
+        "completed": false,
+        "extraProd": 0,
+        "post": [
+          2,
+          770,
+          5145,
+          0
+        ]
+      },
+      {
+        "t": 15,
+        "pre": [
+          2,
+          770,
+          5145,
+          0
+        ],
+        "action": {
+          "work": [
+            "GH",
+            "PH"
+          ],
+          "workMask": 6,
+          "extra": null,
+          "build": "SETTLER"
+        },
+        "F": 500,
+        "P": 700,
+        "d": 100,
+        "e": 110,
+        "grew": false,
+        "q": 735,
+        "credited": 735,
+        "completed": false,
+        "extraProd": 0,
+        "post": [
+          2,
+          880,
+          5880,
+          0
+        ]
+      },
+      {
+        "t": 16,
+        "pre": [
+          2,
+          880,
+          5880,
+          0
+        ],
+        "action": {
+          "work": [
+            "GH",
+            "PH"
+          ],
+          "workMask": 6,
+          "extra": null,
+          "build": "SETTLER"
+        },
+        "F": 500,
+        "P": 700,
+        "d": 100,
+        "e": 110,
+        "grew": false,
+        "q": 735,
+        "credited": 735,
+        "completed": false,
+        "extraProd": 0,
+        "post": [
+          2,
+          990,
+          6615,
+          0
+        ]
+      },
+      {
+        "t": 17,
+        "pre": [
+          2,
+          990,
+          6615,
+          0
+        ],
+        "action": {
+          "work": [
+            "GH",
+            "PH"
+          ],
+          "workMask": 6,
+          "extra": null,
+          "build": "SETTLER"
+        },
+        "F": 500,
+        "P": 700,
+        "d": 100,
+        "e": 110,
+        "grew": false,
+        "q": 735,
+        "credited": 735,
+        "completed": false,
+        "extraProd": 0,
+        "post": [
+          2,
+          1100,
+          7350,
+          0
+        ]
+      },
+      {
+        "t": 18,
+        "pre": [
+          2,
+          1100,
+          7350,
+          0
+        ],
+        "action": {
+          "work": [
+            "GH",
+            "PH"
+          ],
+          "workMask": 6,
+          "extra": null,
+          "build": "SETTLER"
+        },
+        "F": 500,
+        "P": 700,
+        "d": 100,
+        "e": 110,
+        "grew": false,
+        "q": 735,
+        "credited": 735,
+        "completed": false,
+        "extraProd": 0,
+        "post": [
+          2,
+          1210,
+          8085,
+          0
+        ]
+      },
+      {
+        "t": 19,
+        "pre": [
+          2,
+          1210,
+          8085,
+          0
+        ],
+        "action": {
+          "work": [
+            "GH",
+            "PH"
+          ],
+          "workMask": 6,
+          "extra": null,
+          "build": "SETTLER"
+        },
+        "F": 500,
+        "P": 700,
+        "d": 100,
+        "e": 110,
+        "grew": false,
+        "q": 735,
+        "credited": 735,
+        "completed": false,
+        "extraProd": 0,
+        "post": [
+          2,
+          1320,
+          8820,
+          0
+        ]
+      },
+      {
+        "t": 20,
+        "pre": [
+          2,
+          1320,
+          8820,
+          0
+        ],
+        "action": {
+          "work": [
+            "GH",
+            "PH"
+          ],
+          "workMask": 6,
+          "extra": null,
+          "build": "SETTLER"
+        },
+        "F": 500,
+        "P": 700,
+        "d": 100,
+        "e": 110,
+        "grew": false,
+        "q": 735,
+        "credited": 735,
+        "completed": false,
+        "extraProd": 0,
+        "post": [
+          2,
+          1430,
+          9555,
+          0
+        ]
+      },
+      {
+        "t": 21,
+        "pre": [
+          2,
+          1430,
+          9555,
+          0
+        ],
+        "action": {
+          "work": [
+            "GH",
+            "PH"
+          ],
+          "workMask": 6,
+          "extra": null,
+          "build": "SETTLER"
+        },
+        "F": 500,
+        "P": 700,
+        "d": 100,
+        "e": 110,
+        "grew": false,
+        "q": 735,
+        "credited": 735,
+        "completed": false,
+        "extraProd": 0,
+        "post": [
+          2,
+          1540,
+          10290,
+          0
+        ]
+      },
+      {
+        "t": 22,
+        "pre": [
+          2,
+          1540,
+          10290,
+          0
+        ],
+        "action": {
+          "work": [
+            "GH",
+            "PH"
+          ],
+          "workMask": 6,
+          "extra": null,
+          "build": "SETTLER"
+        },
+        "F": 500,
+        "P": 700,
+        "d": 100,
+        "e": 110,
+        "grew": false,
+        "q": 735,
+        "credited": 735,
+        "completed": true,
+        "extraProd": 0,
+        "post": [
+          1,
+          1650,
+          25,
+          1
+        ]
+      }
+    ],
+    "witnessChecks": {
+      "length": 22,
+      "finalState": [
+        1,
+        1650,
+        25,
+        1
+      ],
+      "goal": true,
+      "idleFree": true,
+      "progZeroBeforePop2": true,
+      "nonnegativeSurplus": true,
+      "noGoalBeforeN": true,
+      "settlerPreturnLegal": true
+    },
+    "goalState": [
+      1,
+      0,
+      25,
+      1
+    ]
+  },
+  "crosschecks": {
+    "bonusZeroReproducesBaseline": {
+      "baselineN": 20,
+      "bonusZeroN": 20,
+      "transitionsChecked": 690,
+      "transitionMismatches": 0,
+      "ok": true
+    },
+    "growthUnchanged": {
+      "transitionsChecked": 482,
+      "growthMismatches": 0,
+      "ok": true
+    },
+    "productionDelta": {
+      "deltasObserved": [
+        105
+      ],
+      "nonintegralQ": 0,
+      "checked": 482,
+      "ok": true
+    },
+    "banking": {
+      "idleStepsChecked": 51491,
+      "bankingViolations": 0,
+      "ok": true
+    },
+    "illegalActions": {
+      "rejections": {
+        "settler_at_pop1": true,
+        "idle_with_extra": true,
+        "extra_already_worked": true,
+        "starving_work_set": true
+      },
+      "ok": true
+    },
+    "strictBreakthrough": {
+      "baselineN": 20,
+      "policyN": 18,
+      "baselineN110": 25,
+      "policyN110": 22,
+      "strictlyFaster": true,
+      "withinTaskHorizon": true
+    }
+  },
+  "execution": {
+    "horizon": 27,
+    "seconds": 10.513,
+    "python": "3.13.12"
+  }
+}

@@ -1,0 +1,7312 @@
+{
+  "fixtureId": "cost-frontier-v1",
+  "version": 1,
+  "kind": "untrusted-bounded-cost-frontier-search",
+  "untrusted": true,
+  "gameFactClaim": false,
+  "modelModule": "search/mvp.py",
+  "lowerBoundDoc": "mvp/LOWER-BOUND.md",
+  "doc": "mvp/COST-FRONTIER.md",
+  "baselineTheta": {
+    "settlerCost": 80,
+    "turnOrder": "growth_first",
+    "newCitizen": "best",
+    "amenityStock": 2,
+    "basketOnGrowth": "zero",
+    "productionRounding": "exact",
+    "thresholdRounding": "exact"
+  },
+  "definitions": {
+    "N_p2": "least completion time over plays that never grow from pop 2 to pop 3 (growth-event reading; the strict pop-2 class)",
+    "N_p3_growth": "least completion time over plays with a growth event whose target is >= 3, including when that growth happens on the completing step",
+    "N_p3_standing": "least completion time over plays with a standing pop-3 state strictly before the completing step",
+    "pop3Helps": "N_p3 < N_p2 for the corresponding N_p3 reading",
+    "populationCap": 3,
+    "pop4Note": "pop 4 is forbidden in the frontier comparison; see pop4SideCheck",
+    "horizon": "N2_upper(c) = 7 + ceil(c/630), the exact strict pop-2 completion time",
+    "layerDedup": "exact within-layer dedup over (pop, food, prog, trained, pop3Flag)",
+    "costUnits": "cost in 1/100 production units; costAxis = cost/100"
+  },
+  "populationCap": 3,
+  "envelopeGrowth": {
+    "horizon": 44,
+    "flagMode": "growth",
+    "maxPopSeen": 3,
+    "M2": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      630,
+      1260,
+      1890,
+      2520,
+      3150,
+      3780,
+      4410,
+      5040,
+      5670,
+      6300,
+      6930,
+      7560,
+      8190,
+      8820,
+      9450,
+      10080,
+      10710,
+      11340,
+      11970,
+      12600,
+      13230,
+      13860,
+      14490,
+      15120,
+      15750,
+      16380,
+      17010,
+      17640,
+      18270,
+      18900,
+      19530,
+      20160,
+      20790,
+      21420,
+      22050,
+      22680,
+      23310
+    ],
+    "M3": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      4830,
+      5670,
+      6510,
+      7350,
+      8190,
+      9030,
+      9870,
+      10710,
+      11550,
+      12390,
+      13230,
+      13965,
+      14700,
+      15435,
+      16170,
+      16905,
+      17640,
+      18375,
+      19110,
+      19845,
+      20580,
+      21315,
+      22050,
+      22785,
+      23520,
+      24255,
+      24990
+    ],
+    "firstHelpingCostExact": 13861,
+    "maxCostSampled": 24990,
+    "note": "Envelope from one cost-free BFS with the population capped at 3. M3/M2 are max credited progress at the completing step; the first cost with N_p3 < N_p2 is exact inside the envelope horizon."
+  },
+  "envelopeStanding": {
+    "horizon": 44,
+    "flagMode": "standing",
+    "maxPopSeen": 3,
+    "M2": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      630,
+      1260,
+      1890,
+      2520,
+      3150,
+      3780,
+      4410,
+      5040,
+      5670,
+      6300,
+      6930,
+      7560,
+      8190,
+      8820,
+      9450,
+      10080,
+      10710,
+      11340,
+      11970,
+      12600,
+      13230,
+      13860,
+      14490,
+      15120,
+      15750,
+      16380,
+      17010,
+      17640,
+      18270,
+      18900,
+      19530,
+      20160,
+      20790,
+      21420,
+      22050,
+      22680,
+      23310
+    ],
+    "M3": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      5565,
+      6405,
+      7245,
+      8085,
+      8925,
+      9765,
+      10605,
+      11445,
+      12285,
+      13125,
+      13965,
+      14700,
+      15435,
+      16170,
+      16905,
+      17640,
+      18375,
+      19110,
+      19845,
+      20580,
+      21315,
+      22050,
+      22785,
+      23520,
+      24255,
+      24990
+    ],
+    "firstHelpingCostExact": 13861,
+    "maxCostSampled": 24990,
+    "note": "Envelope from one cost-free BFS with the population capped at 3. M3/M2 are max credited progress at the completing step; the first cost with N_p3 < N_p2 is exact inside the envelope horizon."
+  },
+  "helpingWindowsGrowth": [
+    {
+      "completionTime": 29,
+      "loCost": 13861,
+      "hiCost": 13965
+    },
+    {
+      "completionTime": 30,
+      "loCost": 14491,
+      "hiCost": 14700
+    },
+    {
+      "completionTime": 31,
+      "loCost": 15121,
+      "hiCost": 15435
+    },
+    {
+      "completionTime": 32,
+      "loCost": 15751,
+      "hiCost": 16170
+    },
+    {
+      "completionTime": 33,
+      "loCost": 16381,
+      "hiCost": 16905
+    },
+    {
+      "completionTime": 34,
+      "loCost": 17011,
+      "hiCost": 17640
+    },
+    {
+      "completionTime": 35,
+      "loCost": 17641,
+      "hiCost": 18375
+    },
+    {
+      "completionTime": 36,
+      "loCost": 18376,
+      "hiCost": 19110
+    },
+    {
+      "completionTime": 37,
+      "loCost": 19111,
+      "hiCost": 19845
+    },
+    {
+      "completionTime": 38,
+      "loCost": 19846,
+      "hiCost": 20580
+    },
+    {
+      "completionTime": 39,
+      "loCost": 20581,
+      "hiCost": 21315
+    },
+    {
+      "completionTime": 40,
+      "loCost": 21316,
+      "hiCost": 22050
+    },
+    {
+      "completionTime": 41,
+      "loCost": 22051,
+      "hiCost": 22785
+    },
+    {
+      "completionTime": 42,
+      "loCost": 22786,
+      "hiCost": 23520
+    },
+    {
+      "completionTime": 43,
+      "loCost": 23521,
+      "hiCost": 24255
+    },
+    {
+      "completionTime": 44,
+      "loCost": 24256,
+      "hiCost": 24990
+    }
+  ],
+  "gridWindow": [
+    {
+      "cost": 13700,
+      "costAxis": 137,
+      "horizon": 29,
+      "nP2": 29,
+      "nP3": 29,
+      "pop3Helps": false,
+      "maxPopSeen": 3
+    },
+    {
+      "cost": 13800,
+      "costAxis": 138,
+      "horizon": 29,
+      "nP2": 29,
+      "nP3": 29,
+      "pop3Helps": false,
+      "maxPopSeen": 3
+    },
+    {
+      "cost": 13900,
+      "costAxis": 139,
+      "horizon": 30,
+      "nP2": 30,
+      "nP3": 29,
+      "pop3Helps": true,
+      "maxPopSeen": 3
+    },
+    {
+      "cost": 14000,
+      "costAxis": 140,
+      "horizon": 30,
+      "nP2": 30,
+      "nP3": 30,
+      "pop3Helps": false,
+      "maxPopSeen": 3
+    },
+    {
+      "cost": 14100,
+      "costAxis": 141,
+      "horizon": 30,
+      "nP2": 30,
+      "nP3": 30,
+      "pop3Helps": false,
+      "maxPopSeen": 3
+    }
+  ],
+  "gridEarly": [
+    {
+      "cost": 8000,
+      "costAxis": 80,
+      "horizon": 20,
+      "nP2": 20,
+      "nP3": null,
+      "pop3Helps": false,
+      "maxPopSeen": 3
+    },
+    {
+      "cost": 9000,
+      "costAxis": 90,
+      "horizon": 22,
+      "nP2": 22,
+      "nP3": null,
+      "pop3Helps": false,
+      "maxPopSeen": 3
+    },
+    {
+      "cost": 10000,
+      "costAxis": 100,
+      "horizon": 23,
+      "nP2": 23,
+      "nP3": null,
+      "pop3Helps": false,
+      "maxPopSeen": 3
+    },
+    {
+      "cost": 11000,
+      "costAxis": 110,
+      "horizon": 25,
+      "nP2": 25,
+      "nP3": null,
+      "pop3Helps": false,
+      "maxPopSeen": 3
+    },
+    {
+      "cost": 12000,
+      "costAxis": 120,
+      "horizon": 27,
+      "nP2": 27,
+      "nP3": 27,
+      "pop3Helps": false,
+      "maxPopSeen": 3
+    },
+    {
+      "cost": 13000,
+      "costAxis": 130,
+      "horizon": 28,
+      "nP2": 28,
+      "nP3": 28,
+      "pop3Helps": false,
+      "maxPopSeen": 3
+    }
+  ],
+  "gridLate": [
+    {
+      "cost": 17000,
+      "costAxis": 170,
+      "horizon": 34,
+      "nP2": 34,
+      "nP3": 34,
+      "pop3Helps": false,
+      "maxPopSeen": 3
+    },
+    {
+      "cost": 17011,
+      "costAxis": 170,
+      "horizon": 35,
+      "nP2": 35,
+      "nP3": 34,
+      "pop3Helps": true,
+      "maxPopSeen": 3
+    },
+    {
+      "cost": 17200,
+      "costAxis": 172,
+      "horizon": 35,
+      "nP2": 35,
+      "nP3": 34,
+      "pop3Helps": true,
+      "maxPopSeen": 3
+    },
+    {
+      "cost": 18000,
+      "costAxis": 180,
+      "horizon": 36,
+      "nP2": 36,
+      "nP3": 35,
+      "pop3Helps": true,
+      "maxPopSeen": 3
+    },
+    {
+      "cost": 20000,
+      "costAxis": 200,
+      "horizon": 39,
+      "nP2": 39,
+      "nP3": 38,
+      "pop3Helps": true,
+      "maxPopSeen": 3
+    }
+  ],
+  "boundaryWitnesses": {
+    "lastNonHelpingExact": {
+      "cost": 13860,
+      "costAxis": 138,
+      "nP2": 29,
+      "nP3Growth": 29,
+      "nP3Standing": 29,
+      "pop3HelpsGrowth": false,
+      "pop3HelpsStanding": false,
+      "witnessP3Growth": [
+        {
+          "t": 1,
+          "pre": [
+            1,
+            0,
+            0,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "G"
+            ],
+            "workMask": 1,
+            "extra": null,
+            "build": "IDLE"
+          },
+          "post": [
+            1,
+            220,
+            0,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 2,
+          "pre": [
+            1,
+            220,
+            0,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "G"
+            ],
+            "workMask": 1,
+            "extra": null,
+            "build": "IDLE"
+          },
+          "post": [
+            1,
+            440,
+            0,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 3,
+          "pre": [
+            1,
+            440,
+            0,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "G"
+            ],
+            "workMask": 1,
+            "extra": null,
+            "build": "IDLE"
+          },
+          "post": [
+            1,
+            660,
+            0,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 4,
+          "pre": [
+            1,
+            660,
+            0,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "G"
+            ],
+            "workMask": 1,
+            "extra": null,
+            "build": "IDLE"
+          },
+          "post": [
+            1,
+            880,
+            0,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 5,
+          "pre": [
+            1,
+            880,
+            0,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "G"
+            ],
+            "workMask": 1,
+            "extra": null,
+            "build": "IDLE"
+          },
+          "post": [
+            1,
+            1100,
+            0,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 6,
+          "pre": [
+            1,
+            1100,
+            0,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "G"
+            ],
+            "workMask": 1,
+            "extra": null,
+            "build": "IDLE"
+          },
+          "post": [
+            1,
+            1320,
+            0,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 7,
+          "pre": [
+            1,
+            1320,
+            0,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "G"
+            ],
+            "workMask": 1,
+            "extra": null,
+            "build": "IDLE"
+          },
+          "post": [
+            2,
+            0,
+            0,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 8,
+          "pre": [
+            2,
+            0,
+            0,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "PH",
+              "P"
+            ],
+            "workMask": 12,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            0,
+            630,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 9,
+          "pre": [
+            2,
+            0,
+            630,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "GH",
+              "PH"
+            ],
+            "workMask": 6,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            110,
+            1260,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 10,
+          "pre": [
+            2,
+            110,
+            1260,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "GH",
+              "PH"
+            ],
+            "workMask": 6,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            220,
+            1890,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 11,
+          "pre": [
+            2,
+            220,
+            1890,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "GH",
+              "PH"
+            ],
+            "workMask": 6,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            330,
+            2520,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 12,
+          "pre": [
+            2,
+            330,
+            2520,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "GH",
+              "PH"
+            ],
+            "workMask": 6,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            440,
+            3150,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 13,
+          "pre": [
+            2,
+            440,
+            3150,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "GH",
+              "PH"
+            ],
+            "workMask": 6,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            550,
+            3780,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 14,
+          "pre": [
+            2,
+            550,
+            3780,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "GH",
+              "PH"
+            ],
+            "workMask": 6,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            660,
+            4410,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 15,
+          "pre": [
+            2,
+            660,
+            4410,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "GH",
+              "PH"
+            ],
+            "workMask": 6,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            770,
+            5040,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 16,
+          "pre": [
+            2,
+            770,
+            5040,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "GH",
+              "PH"
+            ],
+            "workMask": 6,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            880,
+            5670,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 17,
+          "pre": [
+            2,
+            880,
+            5670,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "GH",
+              "PH"
+            ],
+            "workMask": 6,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            990,
+            6300,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 18,
+          "pre": [
+            2,
+            990,
+            6300,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "GH",
+              "PH"
+            ],
+            "workMask": 6,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            1100,
+            6930,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 19,
+          "pre": [
+            2,
+            1100,
+            6930,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "GH",
+              "PH"
+            ],
+            "workMask": 6,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            1210,
+            7560,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 20,
+          "pre": [
+            2,
+            1210,
+            7560,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "GH",
+              "PH"
+            ],
+            "workMask": 6,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            1320,
+            8190,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 21,
+          "pre": [
+            2,
+            1320,
+            8190,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "GH",
+              "PH"
+            ],
+            "workMask": 6,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            1430,
+            8820,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 22,
+          "pre": [
+            2,
+            1430,
+            8820,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "GH",
+              "PH"
+            ],
+            "workMask": 6,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            1540,
+            9450,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 23,
+          "pre": [
+            2,
+            1540,
+            9450,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "GH",
+              "PH"
+            ],
+            "workMask": 6,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            1650,
+            10080,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 24,
+          "pre": [
+            2,
+            1650,
+            10080,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "GH",
+              "PH"
+            ],
+            "workMask": 6,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            1760,
+            10710,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 25,
+          "pre": [
+            2,
+            1760,
+            10710,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "GH",
+              "PH"
+            ],
+            "workMask": 6,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            1870,
+            11340,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 26,
+          "pre": [
+            2,
+            1870,
+            11340,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "GH",
+              "PH"
+            ],
+            "workMask": 6,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            1980,
+            11970,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 27,
+          "pre": [
+            2,
+            1980,
+            11970,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "GH",
+              "PH"
+            ],
+            "workMask": 6,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            2090,
+            12600,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 28,
+          "pre": [
+            2,
+            2090,
+            12600,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "GH",
+              "PH"
+            ],
+            "workMask": 6,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            2200,
+            13230,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 29,
+          "pre": [
+            2,
+            2200,
+            13230,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "G",
+              "GH"
+            ],
+            "workMask": 3,
+            "extra": "PH",
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            0,
+            0,
+            1
+          ],
+          "postPop3": true
+        }
+      ],
+      "witnessP3Standing": [
+        {
+          "t": 1,
+          "pre": [
+            1,
+            0,
+            0,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "G"
+            ],
+            "workMask": 1,
+            "extra": null,
+            "build": "IDLE"
+          },
+          "post": [
+            1,
+            220,
+            0,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 2,
+          "pre": [
+            1,
+            220,
+            0,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "G"
+            ],
+            "workMask": 1,
+            "extra": null,
+            "build": "IDLE"
+          },
+          "post": [
+            1,
+            440,
+            0,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 3,
+          "pre": [
+            1,
+            440,
+            0,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "G"
+            ],
+            "workMask": 1,
+            "extra": null,
+            "build": "IDLE"
+          },
+          "post": [
+            1,
+            660,
+            0,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 4,
+          "pre": [
+            1,
+            660,
+            0,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "G"
+            ],
+            "workMask": 1,
+            "extra": null,
+            "build": "IDLE"
+          },
+          "post": [
+            1,
+            880,
+            0,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 5,
+          "pre": [
+            1,
+            880,
+            0,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "G"
+            ],
+            "workMask": 1,
+            "extra": null,
+            "build": "IDLE"
+          },
+          "post": [
+            1,
+            1100,
+            0,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 6,
+          "pre": [
+            1,
+            1100,
+            0,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "G"
+            ],
+            "workMask": 1,
+            "extra": null,
+            "build": "IDLE"
+          },
+          "post": [
+            1,
+            1320,
+            0,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 7,
+          "pre": [
+            1,
+            1320,
+            0,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "G"
+            ],
+            "workMask": 1,
+            "extra": null,
+            "build": "IDLE"
+          },
+          "post": [
+            2,
+            0,
+            0,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 8,
+          "pre": [
+            2,
+            0,
+            0,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "G",
+              "PH"
+            ],
+            "workMask": 5,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            110,
+            525,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 9,
+          "pre": [
+            2,
+            110,
+            525,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "GH",
+              "PH"
+            ],
+            "workMask": 6,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            220,
+            1155,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 10,
+          "pre": [
+            2,
+            220,
+            1155,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "GH",
+              "PH"
+            ],
+            "workMask": 6,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            330,
+            1785,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 11,
+          "pre": [
+            2,
+            330,
+            1785,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "GH",
+              "PH"
+            ],
+            "workMask": 6,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            440,
+            2415,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 12,
+          "pre": [
+            2,
+            440,
+            2415,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "GH",
+              "PH"
+            ],
+            "workMask": 6,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            550,
+            3045,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 13,
+          "pre": [
+            2,
+            550,
+            3045,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "GH",
+              "PH"
+            ],
+            "workMask": 6,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            660,
+            3675,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 14,
+          "pre": [
+            2,
+            660,
+            3675,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "GH",
+              "PH"
+            ],
+            "workMask": 6,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            770,
+            4305,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 15,
+          "pre": [
+            2,
+            770,
+            4305,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "GH",
+              "PH"
+            ],
+            "workMask": 6,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            880,
+            4935,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 16,
+          "pre": [
+            2,
+            880,
+            4935,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "GH",
+              "PH"
+            ],
+            "workMask": 6,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            990,
+            5565,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 17,
+          "pre": [
+            2,
+            990,
+            5565,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "GH",
+              "PH"
+            ],
+            "workMask": 6,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            1100,
+            6195,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 18,
+          "pre": [
+            2,
+            1100,
+            6195,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "GH",
+              "PH"
+            ],
+            "workMask": 6,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            1210,
+            6825,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 19,
+          "pre": [
+            2,
+            1210,
+            6825,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "GH",
+              "PH"
+            ],
+            "workMask": 6,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            1320,
+            7455,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 20,
+          "pre": [
+            2,
+            1320,
+            7455,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "GH",
+              "PH"
+            ],
+            "workMask": 6,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            1430,
+            8085,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 21,
+          "pre": [
+            2,
+            1430,
+            8085,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "GH",
+              "PH"
+            ],
+            "workMask": 6,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            1540,
+            8715,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 22,
+          "pre": [
+            2,
+            1540,
+            8715,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "GH",
+              "PH"
+            ],
+            "workMask": 6,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            1650,
+            9345,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 23,
+          "pre": [
+            2,
+            1650,
+            9345,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "GH",
+              "PH"
+            ],
+            "workMask": 6,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            1760,
+            9975,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 24,
+          "pre": [
+            2,
+            1760,
+            9975,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "GH",
+              "PH"
+            ],
+            "workMask": 6,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            1870,
+            10605,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 25,
+          "pre": [
+            2,
+            1870,
+            10605,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "GH",
+              "PH"
+            ],
+            "workMask": 6,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            1980,
+            11235,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 26,
+          "pre": [
+            2,
+            1980,
+            11235,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "GH",
+              "PH"
+            ],
+            "workMask": 6,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            2090,
+            11865,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 27,
+          "pre": [
+            2,
+            2090,
+            11865,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "GH",
+              "PH"
+            ],
+            "workMask": 6,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            2200,
+            12495,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 28,
+          "pre": [
+            2,
+            2200,
+            12495,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "G",
+              "GH"
+            ],
+            "workMask": 3,
+            "extra": "PH",
+            "build": "SETTLER"
+          },
+          "post": [
+            3,
+            0,
+            13125,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 29,
+          "pre": [
+            3,
+            0,
+            13125,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "GH",
+              "PH",
+              "P"
+            ],
+            "workMask": 14,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            0,
+            0,
+            1
+          ],
+          "postPop3": true
+        }
+      ],
+      "witnessP2": [
+        {
+          "t": 1,
+          "pre": [
+            1,
+            0,
+            0,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "G"
+            ],
+            "workMask": 1,
+            "extra": null,
+            "build": "IDLE"
+          },
+          "post": [
+            1,
+            220,
+            0,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 2,
+          "pre": [
+            1,
+            220,
+            0,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "G"
+            ],
+            "workMask": 1,
+            "extra": null,
+            "build": "IDLE"
+          },
+          "post": [
+            1,
+            440,
+            0,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 3,
+          "pre": [
+            1,
+            440,
+            0,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "G"
+            ],
+            "workMask": 1,
+            "extra": null,
+            "build": "IDLE"
+          },
+          "post": [
+            1,
+            660,
+            0,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 4,
+          "pre": [
+            1,
+            660,
+            0,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "G"
+            ],
+            "workMask": 1,
+            "extra": null,
+            "build": "IDLE"
+          },
+          "post": [
+            1,
+            880,
+            0,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 5,
+          "pre": [
+            1,
+            880,
+            0,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "G"
+            ],
+            "workMask": 1,
+            "extra": null,
+            "build": "IDLE"
+          },
+          "post": [
+            1,
+            1100,
+            0,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 6,
+          "pre": [
+            1,
+            1100,
+            0,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "G"
+            ],
+            "workMask": 1,
+            "extra": null,
+            "build": "IDLE"
+          },
+          "post": [
+            1,
+            1320,
+            0,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 7,
+          "pre": [
+            1,
+            1320,
+            0,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "G"
+            ],
+            "workMask": 1,
+            "extra": null,
+            "build": "IDLE"
+          },
+          "post": [
+            2,
+            0,
+            0,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 8,
+          "pre": [
+            2,
+            0,
+            0,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "PH",
+              "P"
+            ],
+            "workMask": 12,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            0,
+            630,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 9,
+          "pre": [
+            2,
+            0,
+            630,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "PH",
+              "P"
+            ],
+            "workMask": 12,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            0,
+            1260,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 10,
+          "pre": [
+            2,
+            0,
+            1260,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "PH",
+              "P"
+            ],
+            "workMask": 12,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            0,
+            1890,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 11,
+          "pre": [
+            2,
+            0,
+            1890,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "PH",
+              "P"
+            ],
+            "workMask": 12,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            0,
+            2520,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 12,
+          "pre": [
+            2,
+            0,
+            2520,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "PH",
+              "P"
+            ],
+            "workMask": 12,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            0,
+            3150,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 13,
+          "pre": [
+            2,
+            0,
+            3150,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "PH",
+              "P"
+            ],
+            "workMask": 12,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            0,
+            3780,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 14,
+          "pre": [
+            2,
+            0,
+            3780,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "PH",
+              "P"
+            ],
+            "workMask": 12,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            0,
+            4410,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 15,
+          "pre": [
+            2,
+            0,
+            4410,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "PH",
+              "P"
+            ],
+            "workMask": 12,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            0,
+            5040,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 16,
+          "pre": [
+            2,
+            0,
+            5040,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "PH",
+              "P"
+            ],
+            "workMask": 12,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            0,
+            5670,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 17,
+          "pre": [
+            2,
+            0,
+            5670,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "PH",
+              "P"
+            ],
+            "workMask": 12,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            0,
+            6300,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 18,
+          "pre": [
+            2,
+            0,
+            6300,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "PH",
+              "P"
+            ],
+            "workMask": 12,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            0,
+            6930,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 19,
+          "pre": [
+            2,
+            0,
+            6930,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "PH",
+              "P"
+            ],
+            "workMask": 12,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            0,
+            7560,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 20,
+          "pre": [
+            2,
+            0,
+            7560,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "PH",
+              "P"
+            ],
+            "workMask": 12,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            0,
+            8190,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 21,
+          "pre": [
+            2,
+            0,
+            8190,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "PH",
+              "P"
+            ],
+            "workMask": 12,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            0,
+            8820,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 22,
+          "pre": [
+            2,
+            0,
+            8820,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "PH",
+              "P"
+            ],
+            "workMask": 12,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            0,
+            9450,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 23,
+          "pre": [
+            2,
+            0,
+            9450,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "PH",
+              "P"
+            ],
+            "workMask": 12,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            0,
+            10080,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 24,
+          "pre": [
+            2,
+            0,
+            10080,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "PH",
+              "P"
+            ],
+            "workMask": 12,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            0,
+            10710,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 25,
+          "pre": [
+            2,
+            0,
+            10710,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "PH",
+              "P"
+            ],
+            "workMask": 12,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            0,
+            11340,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 26,
+          "pre": [
+            2,
+            0,
+            11340,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "PH",
+              "P"
+            ],
+            "workMask": 12,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            0,
+            11970,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 27,
+          "pre": [
+            2,
+            0,
+            11970,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "PH",
+              "P"
+            ],
+            "workMask": 12,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            0,
+            12600,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 28,
+          "pre": [
+            2,
+            0,
+            12600,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "PH",
+              "P"
+            ],
+            "workMask": 12,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            0,
+            13230,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 29,
+          "pre": [
+            2,
+            0,
+            13230,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "PH",
+              "P"
+            ],
+            "workMask": 12,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            1,
+            0,
+            0,
+            1
+          ],
+          "postPop3": false
+        }
+      ]
+    },
+    "firstHelpingExact": {
+      "cost": 13861,
+      "costAxis": 138,
+      "nP2": 30,
+      "nP3Growth": 29,
+      "nP3Standing": 29,
+      "pop3HelpsGrowth": true,
+      "pop3HelpsStanding": true,
+      "witnessP3Growth": [
+        {
+          "t": 1,
+          "pre": [
+            1,
+            0,
+            0,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "G"
+            ],
+            "workMask": 1,
+            "extra": null,
+            "build": "IDLE"
+          },
+          "post": [
+            1,
+            220,
+            0,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 2,
+          "pre": [
+            1,
+            220,
+            0,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "G"
+            ],
+            "workMask": 1,
+            "extra": null,
+            "build": "IDLE"
+          },
+          "post": [
+            1,
+            440,
+            0,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 3,
+          "pre": [
+            1,
+            440,
+            0,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "G"
+            ],
+            "workMask": 1,
+            "extra": null,
+            "build": "IDLE"
+          },
+          "post": [
+            1,
+            660,
+            0,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 4,
+          "pre": [
+            1,
+            660,
+            0,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "G"
+            ],
+            "workMask": 1,
+            "extra": null,
+            "build": "IDLE"
+          },
+          "post": [
+            1,
+            880,
+            0,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 5,
+          "pre": [
+            1,
+            880,
+            0,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "G"
+            ],
+            "workMask": 1,
+            "extra": null,
+            "build": "IDLE"
+          },
+          "post": [
+            1,
+            1100,
+            0,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 6,
+          "pre": [
+            1,
+            1100,
+            0,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "G"
+            ],
+            "workMask": 1,
+            "extra": null,
+            "build": "IDLE"
+          },
+          "post": [
+            1,
+            1320,
+            0,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 7,
+          "pre": [
+            1,
+            1320,
+            0,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "G"
+            ],
+            "workMask": 1,
+            "extra": null,
+            "build": "IDLE"
+          },
+          "post": [
+            2,
+            0,
+            0,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 8,
+          "pre": [
+            2,
+            0,
+            0,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "GH",
+              "PH"
+            ],
+            "workMask": 6,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            110,
+            630,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 9,
+          "pre": [
+            2,
+            110,
+            630,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "GH",
+              "PH"
+            ],
+            "workMask": 6,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            220,
+            1260,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 10,
+          "pre": [
+            2,
+            220,
+            1260,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "GH",
+              "PH"
+            ],
+            "workMask": 6,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            330,
+            1890,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 11,
+          "pre": [
+            2,
+            330,
+            1890,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "GH",
+              "PH"
+            ],
+            "workMask": 6,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            440,
+            2520,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 12,
+          "pre": [
+            2,
+            440,
+            2520,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "GH",
+              "PH"
+            ],
+            "workMask": 6,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            550,
+            3150,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 13,
+          "pre": [
+            2,
+            550,
+            3150,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "GH",
+              "PH"
+            ],
+            "workMask": 6,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            660,
+            3780,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 14,
+          "pre": [
+            2,
+            660,
+            3780,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "GH",
+              "PH"
+            ],
+            "workMask": 6,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            770,
+            4410,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 15,
+          "pre": [
+            2,
+            770,
+            4410,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "GH",
+              "PH"
+            ],
+            "workMask": 6,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            880,
+            5040,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 16,
+          "pre": [
+            2,
+            880,
+            5040,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "GH",
+              "PH"
+            ],
+            "workMask": 6,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            990,
+            5670,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 17,
+          "pre": [
+            2,
+            990,
+            5670,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "GH",
+              "PH"
+            ],
+            "workMask": 6,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            1100,
+            6300,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 18,
+          "pre": [
+            2,
+            1100,
+            6300,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "GH",
+              "PH"
+            ],
+            "workMask": 6,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            1210,
+            6930,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 19,
+          "pre": [
+            2,
+            1210,
+            6930,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "GH",
+              "PH"
+            ],
+            "workMask": 6,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            1320,
+            7560,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 20,
+          "pre": [
+            2,
+            1320,
+            7560,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "GH",
+              "PH"
+            ],
+            "workMask": 6,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            1430,
+            8190,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 21,
+          "pre": [
+            2,
+            1430,
+            8190,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "GH",
+              "PH"
+            ],
+            "workMask": 6,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            1540,
+            8820,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 22,
+          "pre": [
+            2,
+            1540,
+            8820,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "GH",
+              "PH"
+            ],
+            "workMask": 6,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            1650,
+            9450,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 23,
+          "pre": [
+            2,
+            1650,
+            9450,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "GH",
+              "PH"
+            ],
+            "workMask": 6,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            1760,
+            10080,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 24,
+          "pre": [
+            2,
+            1760,
+            10080,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "GH",
+              "PH"
+            ],
+            "workMask": 6,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            1870,
+            10710,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 25,
+          "pre": [
+            2,
+            1870,
+            10710,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "GH",
+              "PH"
+            ],
+            "workMask": 6,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            1980,
+            11340,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 26,
+          "pre": [
+            2,
+            1980,
+            11340,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "GH",
+              "PH"
+            ],
+            "workMask": 6,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            2090,
+            11970,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 27,
+          "pre": [
+            2,
+            2090,
+            11970,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "GH",
+              "PH"
+            ],
+            "workMask": 6,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            2200,
+            12600,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 28,
+          "pre": [
+            2,
+            2200,
+            12600,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "GH",
+              "PH"
+            ],
+            "workMask": 6,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            2310,
+            13230,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 29,
+          "pre": [
+            2,
+            2310,
+            13230,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "GH",
+              "PH"
+            ],
+            "workMask": 6,
+            "extra": "P",
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            0,
+            104,
+            1
+          ],
+          "postPop3": true
+        }
+      ],
+      "witnessP3Standing": [
+        {
+          "t": 1,
+          "pre": [
+            1,
+            0,
+            0,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "G"
+            ],
+            "workMask": 1,
+            "extra": null,
+            "build": "IDLE"
+          },
+          "post": [
+            1,
+            220,
+            0,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 2,
+          "pre": [
+            1,
+            220,
+            0,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "G"
+            ],
+            "workMask": 1,
+            "extra": null,
+            "build": "IDLE"
+          },
+          "post": [
+            1,
+            440,
+            0,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 3,
+          "pre": [
+            1,
+            440,
+            0,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "G"
+            ],
+            "workMask": 1,
+            "extra": null,
+            "build": "IDLE"
+          },
+          "post": [
+            1,
+            660,
+            0,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 4,
+          "pre": [
+            1,
+            660,
+            0,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "G"
+            ],
+            "workMask": 1,
+            "extra": null,
+            "build": "IDLE"
+          },
+          "post": [
+            1,
+            880,
+            0,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 5,
+          "pre": [
+            1,
+            880,
+            0,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "G"
+            ],
+            "workMask": 1,
+            "extra": null,
+            "build": "IDLE"
+          },
+          "post": [
+            1,
+            1100,
+            0,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 6,
+          "pre": [
+            1,
+            1100,
+            0,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "G"
+            ],
+            "workMask": 1,
+            "extra": null,
+            "build": "IDLE"
+          },
+          "post": [
+            1,
+            1320,
+            0,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 7,
+          "pre": [
+            1,
+            1320,
+            0,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "G"
+            ],
+            "workMask": 1,
+            "extra": null,
+            "build": "IDLE"
+          },
+          "post": [
+            2,
+            0,
+            0,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 8,
+          "pre": [
+            2,
+            0,
+            0,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "GH",
+              "PH"
+            ],
+            "workMask": 6,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            110,
+            630,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 9,
+          "pre": [
+            2,
+            110,
+            630,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "GH",
+              "PH"
+            ],
+            "workMask": 6,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            220,
+            1260,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 10,
+          "pre": [
+            2,
+            220,
+            1260,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "GH",
+              "PH"
+            ],
+            "workMask": 6,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            330,
+            1890,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 11,
+          "pre": [
+            2,
+            330,
+            1890,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "GH",
+              "PH"
+            ],
+            "workMask": 6,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            440,
+            2520,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 12,
+          "pre": [
+            2,
+            440,
+            2520,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "GH",
+              "PH"
+            ],
+            "workMask": 6,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            550,
+            3150,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 13,
+          "pre": [
+            2,
+            550,
+            3150,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "GH",
+              "PH"
+            ],
+            "workMask": 6,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            660,
+            3780,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 14,
+          "pre": [
+            2,
+            660,
+            3780,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "GH",
+              "PH"
+            ],
+            "workMask": 6,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            770,
+            4410,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 15,
+          "pre": [
+            2,
+            770,
+            4410,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "GH",
+              "PH"
+            ],
+            "workMask": 6,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            880,
+            5040,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 16,
+          "pre": [
+            2,
+            880,
+            5040,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "GH",
+              "PH"
+            ],
+            "workMask": 6,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            990,
+            5670,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 17,
+          "pre": [
+            2,
+            990,
+            5670,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "GH",
+              "PH"
+            ],
+            "workMask": 6,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            1100,
+            6300,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 18,
+          "pre": [
+            2,
+            1100,
+            6300,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "GH",
+              "PH"
+            ],
+            "workMask": 6,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            1210,
+            6930,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 19,
+          "pre": [
+            2,
+            1210,
+            6930,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "GH",
+              "PH"
+            ],
+            "workMask": 6,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            1320,
+            7560,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 20,
+          "pre": [
+            2,
+            1320,
+            7560,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "GH",
+              "PH"
+            ],
+            "workMask": 6,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            1430,
+            8190,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 21,
+          "pre": [
+            2,
+            1430,
+            8190,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "GH",
+              "PH"
+            ],
+            "workMask": 6,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            1540,
+            8820,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 22,
+          "pre": [
+            2,
+            1540,
+            8820,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "GH",
+              "PH"
+            ],
+            "workMask": 6,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            1650,
+            9450,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 23,
+          "pre": [
+            2,
+            1650,
+            9450,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "GH",
+              "PH"
+            ],
+            "workMask": 6,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            1760,
+            10080,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 24,
+          "pre": [
+            2,
+            1760,
+            10080,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "GH",
+              "PH"
+            ],
+            "workMask": 6,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            1870,
+            10710,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 25,
+          "pre": [
+            2,
+            1870,
+            10710,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "GH",
+              "PH"
+            ],
+            "workMask": 6,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            1980,
+            11340,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 26,
+          "pre": [
+            2,
+            1980,
+            11340,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "GH",
+              "PH"
+            ],
+            "workMask": 6,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            2090,
+            11970,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 27,
+          "pre": [
+            2,
+            2090,
+            11970,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "GH",
+              "PH"
+            ],
+            "workMask": 6,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            2200,
+            12600,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 28,
+          "pre": [
+            2,
+            2200,
+            12600,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "G",
+              "GH"
+            ],
+            "workMask": 3,
+            "extra": "PH",
+            "build": "SETTLER"
+          },
+          "post": [
+            3,
+            0,
+            13230,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 29,
+          "pre": [
+            3,
+            0,
+            13230,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "GH",
+              "PH",
+              "P"
+            ],
+            "workMask": 14,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            0,
+            104,
+            1
+          ],
+          "postPop3": true
+        }
+      ],
+      "witnessP2": [
+        {
+          "t": 1,
+          "pre": [
+            1,
+            0,
+            0,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "G"
+            ],
+            "workMask": 1,
+            "extra": null,
+            "build": "IDLE"
+          },
+          "post": [
+            1,
+            220,
+            0,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 2,
+          "pre": [
+            1,
+            220,
+            0,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "G"
+            ],
+            "workMask": 1,
+            "extra": null,
+            "build": "IDLE"
+          },
+          "post": [
+            1,
+            440,
+            0,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 3,
+          "pre": [
+            1,
+            440,
+            0,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "G"
+            ],
+            "workMask": 1,
+            "extra": null,
+            "build": "IDLE"
+          },
+          "post": [
+            1,
+            660,
+            0,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 4,
+          "pre": [
+            1,
+            660,
+            0,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "G"
+            ],
+            "workMask": 1,
+            "extra": null,
+            "build": "IDLE"
+          },
+          "post": [
+            1,
+            880,
+            0,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 5,
+          "pre": [
+            1,
+            880,
+            0,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "G"
+            ],
+            "workMask": 1,
+            "extra": null,
+            "build": "IDLE"
+          },
+          "post": [
+            1,
+            1100,
+            0,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 6,
+          "pre": [
+            1,
+            1100,
+            0,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "G"
+            ],
+            "workMask": 1,
+            "extra": null,
+            "build": "IDLE"
+          },
+          "post": [
+            1,
+            1320,
+            0,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 7,
+          "pre": [
+            1,
+            1320,
+            0,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "G"
+            ],
+            "workMask": 1,
+            "extra": null,
+            "build": "IDLE"
+          },
+          "post": [
+            2,
+            0,
+            0,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 8,
+          "pre": [
+            2,
+            0,
+            0,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "G"
+            ],
+            "workMask": 1,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            0,
+            315,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 9,
+          "pre": [
+            2,
+            0,
+            315,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "GH"
+            ],
+            "workMask": 2,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            0,
+            735,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 10,
+          "pre": [
+            2,
+            0,
+            735,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "PH",
+              "P"
+            ],
+            "workMask": 12,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            0,
+            1365,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 11,
+          "pre": [
+            2,
+            0,
+            1365,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "PH",
+              "P"
+            ],
+            "workMask": 12,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            0,
+            1995,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 12,
+          "pre": [
+            2,
+            0,
+            1995,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "PH",
+              "P"
+            ],
+            "workMask": 12,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            0,
+            2625,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 13,
+          "pre": [
+            2,
+            0,
+            2625,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "PH",
+              "P"
+            ],
+            "workMask": 12,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            0,
+            3255,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 14,
+          "pre": [
+            2,
+            0,
+            3255,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "PH",
+              "P"
+            ],
+            "workMask": 12,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            0,
+            3885,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 15,
+          "pre": [
+            2,
+            0,
+            3885,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "PH",
+              "P"
+            ],
+            "workMask": 12,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            0,
+            4515,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 16,
+          "pre": [
+            2,
+            0,
+            4515,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "PH",
+              "P"
+            ],
+            "workMask": 12,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            0,
+            5145,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 17,
+          "pre": [
+            2,
+            0,
+            5145,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "PH",
+              "P"
+            ],
+            "workMask": 12,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            0,
+            5775,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 18,
+          "pre": [
+            2,
+            0,
+            5775,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "PH",
+              "P"
+            ],
+            "workMask": 12,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            0,
+            6405,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 19,
+          "pre": [
+            2,
+            0,
+            6405,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "PH",
+              "P"
+            ],
+            "workMask": 12,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            0,
+            7035,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 20,
+          "pre": [
+            2,
+            0,
+            7035,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "PH",
+              "P"
+            ],
+            "workMask": 12,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            0,
+            7665,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 21,
+          "pre": [
+            2,
+            0,
+            7665,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "PH",
+              "P"
+            ],
+            "workMask": 12,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            0,
+            8295,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 22,
+          "pre": [
+            2,
+            0,
+            8295,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "PH",
+              "P"
+            ],
+            "workMask": 12,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            0,
+            8925,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 23,
+          "pre": [
+            2,
+            0,
+            8925,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "PH",
+              "P"
+            ],
+            "workMask": 12,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            0,
+            9555,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 24,
+          "pre": [
+            2,
+            0,
+            9555,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "PH",
+              "P"
+            ],
+            "workMask": 12,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            0,
+            10185,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 25,
+          "pre": [
+            2,
+            0,
+            10185,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "PH",
+              "P"
+            ],
+            "workMask": 12,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            0,
+            10815,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 26,
+          "pre": [
+            2,
+            0,
+            10815,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "PH",
+              "P"
+            ],
+            "workMask": 12,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            0,
+            11445,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 27,
+          "pre": [
+            2,
+            0,
+            11445,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "PH",
+              "P"
+            ],
+            "workMask": 12,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            0,
+            12075,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 28,
+          "pre": [
+            2,
+            0,
+            12075,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "PH",
+              "P"
+            ],
+            "workMask": 12,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            0,
+            12705,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 29,
+          "pre": [
+            2,
+            0,
+            12705,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "PH",
+              "P"
+            ],
+            "workMask": 12,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            0,
+            13335,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 30,
+          "pre": [
+            2,
+            0,
+            13335,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "PH",
+              "P"
+            ],
+            "workMask": 12,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            1,
+            0,
+            104,
+            1
+          ],
+          "postPop3": false
+        }
+      ]
+    },
+    "firstHelpingGrid100": {
+      "cost": 13900,
+      "costAxis": 139,
+      "nP2": 30,
+      "nP3Growth": 29,
+      "nP3Standing": 29,
+      "pop3HelpsGrowth": true,
+      "pop3HelpsStanding": true,
+      "witnessP3Growth": [
+        {
+          "t": 1,
+          "pre": [
+            1,
+            0,
+            0,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "G"
+            ],
+            "workMask": 1,
+            "extra": null,
+            "build": "IDLE"
+          },
+          "post": [
+            1,
+            220,
+            0,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 2,
+          "pre": [
+            1,
+            220,
+            0,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "G"
+            ],
+            "workMask": 1,
+            "extra": null,
+            "build": "IDLE"
+          },
+          "post": [
+            1,
+            440,
+            0,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 3,
+          "pre": [
+            1,
+            440,
+            0,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "G"
+            ],
+            "workMask": 1,
+            "extra": null,
+            "build": "IDLE"
+          },
+          "post": [
+            1,
+            660,
+            0,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 4,
+          "pre": [
+            1,
+            660,
+            0,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "G"
+            ],
+            "workMask": 1,
+            "extra": null,
+            "build": "IDLE"
+          },
+          "post": [
+            1,
+            880,
+            0,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 5,
+          "pre": [
+            1,
+            880,
+            0,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "G"
+            ],
+            "workMask": 1,
+            "extra": null,
+            "build": "IDLE"
+          },
+          "post": [
+            1,
+            1100,
+            0,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 6,
+          "pre": [
+            1,
+            1100,
+            0,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "G"
+            ],
+            "workMask": 1,
+            "extra": null,
+            "build": "IDLE"
+          },
+          "post": [
+            1,
+            1320,
+            0,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 7,
+          "pre": [
+            1,
+            1320,
+            0,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "G"
+            ],
+            "workMask": 1,
+            "extra": null,
+            "build": "IDLE"
+          },
+          "post": [
+            2,
+            0,
+            0,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 8,
+          "pre": [
+            2,
+            0,
+            0,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "GH",
+              "PH"
+            ],
+            "workMask": 6,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            110,
+            630,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 9,
+          "pre": [
+            2,
+            110,
+            630,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "GH",
+              "PH"
+            ],
+            "workMask": 6,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            220,
+            1260,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 10,
+          "pre": [
+            2,
+            220,
+            1260,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "GH",
+              "PH"
+            ],
+            "workMask": 6,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            330,
+            1890,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 11,
+          "pre": [
+            2,
+            330,
+            1890,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "GH",
+              "PH"
+            ],
+            "workMask": 6,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            440,
+            2520,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 12,
+          "pre": [
+            2,
+            440,
+            2520,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "GH",
+              "PH"
+            ],
+            "workMask": 6,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            550,
+            3150,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 13,
+          "pre": [
+            2,
+            550,
+            3150,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "GH",
+              "PH"
+            ],
+            "workMask": 6,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            660,
+            3780,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 14,
+          "pre": [
+            2,
+            660,
+            3780,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "GH",
+              "PH"
+            ],
+            "workMask": 6,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            770,
+            4410,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 15,
+          "pre": [
+            2,
+            770,
+            4410,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "GH",
+              "PH"
+            ],
+            "workMask": 6,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            880,
+            5040,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 16,
+          "pre": [
+            2,
+            880,
+            5040,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "GH",
+              "PH"
+            ],
+            "workMask": 6,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            990,
+            5670,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 17,
+          "pre": [
+            2,
+            990,
+            5670,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "GH",
+              "PH"
+            ],
+            "workMask": 6,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            1100,
+            6300,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 18,
+          "pre": [
+            2,
+            1100,
+            6300,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "GH",
+              "PH"
+            ],
+            "workMask": 6,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            1210,
+            6930,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 19,
+          "pre": [
+            2,
+            1210,
+            6930,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "GH",
+              "PH"
+            ],
+            "workMask": 6,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            1320,
+            7560,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 20,
+          "pre": [
+            2,
+            1320,
+            7560,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "GH",
+              "PH"
+            ],
+            "workMask": 6,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            1430,
+            8190,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 21,
+          "pre": [
+            2,
+            1430,
+            8190,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "GH",
+              "PH"
+            ],
+            "workMask": 6,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            1540,
+            8820,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 22,
+          "pre": [
+            2,
+            1540,
+            8820,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "GH",
+              "PH"
+            ],
+            "workMask": 6,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            1650,
+            9450,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 23,
+          "pre": [
+            2,
+            1650,
+            9450,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "GH",
+              "PH"
+            ],
+            "workMask": 6,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            1760,
+            10080,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 24,
+          "pre": [
+            2,
+            1760,
+            10080,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "GH",
+              "PH"
+            ],
+            "workMask": 6,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            1870,
+            10710,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 25,
+          "pre": [
+            2,
+            1870,
+            10710,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "GH",
+              "PH"
+            ],
+            "workMask": 6,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            1980,
+            11340,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 26,
+          "pre": [
+            2,
+            1980,
+            11340,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "GH",
+              "PH"
+            ],
+            "workMask": 6,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            2090,
+            11970,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 27,
+          "pre": [
+            2,
+            2090,
+            11970,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "GH",
+              "PH"
+            ],
+            "workMask": 6,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            2200,
+            12600,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 28,
+          "pre": [
+            2,
+            2200,
+            12600,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "GH",
+              "PH"
+            ],
+            "workMask": 6,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            2310,
+            13230,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 29,
+          "pre": [
+            2,
+            2310,
+            13230,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "GH",
+              "PH"
+            ],
+            "workMask": 6,
+            "extra": "P",
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            0,
+            65,
+            1
+          ],
+          "postPop3": true
+        }
+      ],
+      "witnessP3Standing": [
+        {
+          "t": 1,
+          "pre": [
+            1,
+            0,
+            0,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "G"
+            ],
+            "workMask": 1,
+            "extra": null,
+            "build": "IDLE"
+          },
+          "post": [
+            1,
+            220,
+            0,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 2,
+          "pre": [
+            1,
+            220,
+            0,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "G"
+            ],
+            "workMask": 1,
+            "extra": null,
+            "build": "IDLE"
+          },
+          "post": [
+            1,
+            440,
+            0,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 3,
+          "pre": [
+            1,
+            440,
+            0,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "G"
+            ],
+            "workMask": 1,
+            "extra": null,
+            "build": "IDLE"
+          },
+          "post": [
+            1,
+            660,
+            0,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 4,
+          "pre": [
+            1,
+            660,
+            0,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "G"
+            ],
+            "workMask": 1,
+            "extra": null,
+            "build": "IDLE"
+          },
+          "post": [
+            1,
+            880,
+            0,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 5,
+          "pre": [
+            1,
+            880,
+            0,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "G"
+            ],
+            "workMask": 1,
+            "extra": null,
+            "build": "IDLE"
+          },
+          "post": [
+            1,
+            1100,
+            0,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 6,
+          "pre": [
+            1,
+            1100,
+            0,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "G"
+            ],
+            "workMask": 1,
+            "extra": null,
+            "build": "IDLE"
+          },
+          "post": [
+            1,
+            1320,
+            0,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 7,
+          "pre": [
+            1,
+            1320,
+            0,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "G"
+            ],
+            "workMask": 1,
+            "extra": null,
+            "build": "IDLE"
+          },
+          "post": [
+            2,
+            0,
+            0,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 8,
+          "pre": [
+            2,
+            0,
+            0,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "GH",
+              "PH"
+            ],
+            "workMask": 6,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            110,
+            630,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 9,
+          "pre": [
+            2,
+            110,
+            630,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "GH",
+              "PH"
+            ],
+            "workMask": 6,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            220,
+            1260,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 10,
+          "pre": [
+            2,
+            220,
+            1260,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "GH",
+              "PH"
+            ],
+            "workMask": 6,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            330,
+            1890,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 11,
+          "pre": [
+            2,
+            330,
+            1890,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "GH",
+              "PH"
+            ],
+            "workMask": 6,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            440,
+            2520,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 12,
+          "pre": [
+            2,
+            440,
+            2520,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "GH",
+              "PH"
+            ],
+            "workMask": 6,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            550,
+            3150,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 13,
+          "pre": [
+            2,
+            550,
+            3150,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "GH",
+              "PH"
+            ],
+            "workMask": 6,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            660,
+            3780,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 14,
+          "pre": [
+            2,
+            660,
+            3780,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "GH",
+              "PH"
+            ],
+            "workMask": 6,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            770,
+            4410,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 15,
+          "pre": [
+            2,
+            770,
+            4410,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "GH",
+              "PH"
+            ],
+            "workMask": 6,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            880,
+            5040,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 16,
+          "pre": [
+            2,
+            880,
+            5040,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "GH",
+              "PH"
+            ],
+            "workMask": 6,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            990,
+            5670,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 17,
+          "pre": [
+            2,
+            990,
+            5670,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "GH",
+              "PH"
+            ],
+            "workMask": 6,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            1100,
+            6300,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 18,
+          "pre": [
+            2,
+            1100,
+            6300,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "GH",
+              "PH"
+            ],
+            "workMask": 6,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            1210,
+            6930,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 19,
+          "pre": [
+            2,
+            1210,
+            6930,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "GH",
+              "PH"
+            ],
+            "workMask": 6,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            1320,
+            7560,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 20,
+          "pre": [
+            2,
+            1320,
+            7560,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "GH",
+              "PH"
+            ],
+            "workMask": 6,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            1430,
+            8190,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 21,
+          "pre": [
+            2,
+            1430,
+            8190,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "GH",
+              "PH"
+            ],
+            "workMask": 6,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            1540,
+            8820,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 22,
+          "pre": [
+            2,
+            1540,
+            8820,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "GH",
+              "PH"
+            ],
+            "workMask": 6,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            1650,
+            9450,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 23,
+          "pre": [
+            2,
+            1650,
+            9450,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "GH",
+              "PH"
+            ],
+            "workMask": 6,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            1760,
+            10080,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 24,
+          "pre": [
+            2,
+            1760,
+            10080,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "GH",
+              "PH"
+            ],
+            "workMask": 6,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            1870,
+            10710,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 25,
+          "pre": [
+            2,
+            1870,
+            10710,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "GH",
+              "PH"
+            ],
+            "workMask": 6,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            1980,
+            11340,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 26,
+          "pre": [
+            2,
+            1980,
+            11340,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "GH",
+              "PH"
+            ],
+            "workMask": 6,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            2090,
+            11970,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 27,
+          "pre": [
+            2,
+            2090,
+            11970,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "GH",
+              "PH"
+            ],
+            "workMask": 6,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            2200,
+            12600,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 28,
+          "pre": [
+            2,
+            2200,
+            12600,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "G",
+              "GH"
+            ],
+            "workMask": 3,
+            "extra": "PH",
+            "build": "SETTLER"
+          },
+          "post": [
+            3,
+            0,
+            13230,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 29,
+          "pre": [
+            3,
+            0,
+            13230,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "GH",
+              "PH",
+              "P"
+            ],
+            "workMask": 14,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            0,
+            65,
+            1
+          ],
+          "postPop3": true
+        }
+      ],
+      "witnessP2": [
+        {
+          "t": 1,
+          "pre": [
+            1,
+            0,
+            0,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "G"
+            ],
+            "workMask": 1,
+            "extra": null,
+            "build": "IDLE"
+          },
+          "post": [
+            1,
+            220,
+            0,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 2,
+          "pre": [
+            1,
+            220,
+            0,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "G"
+            ],
+            "workMask": 1,
+            "extra": null,
+            "build": "IDLE"
+          },
+          "post": [
+            1,
+            440,
+            0,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 3,
+          "pre": [
+            1,
+            440,
+            0,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "G"
+            ],
+            "workMask": 1,
+            "extra": null,
+            "build": "IDLE"
+          },
+          "post": [
+            1,
+            660,
+            0,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 4,
+          "pre": [
+            1,
+            660,
+            0,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "G"
+            ],
+            "workMask": 1,
+            "extra": null,
+            "build": "IDLE"
+          },
+          "post": [
+            1,
+            880,
+            0,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 5,
+          "pre": [
+            1,
+            880,
+            0,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "G"
+            ],
+            "workMask": 1,
+            "extra": null,
+            "build": "IDLE"
+          },
+          "post": [
+            1,
+            1100,
+            0,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 6,
+          "pre": [
+            1,
+            1100,
+            0,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "G"
+            ],
+            "workMask": 1,
+            "extra": null,
+            "build": "IDLE"
+          },
+          "post": [
+            1,
+            1320,
+            0,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 7,
+          "pre": [
+            1,
+            1320,
+            0,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "G"
+            ],
+            "workMask": 1,
+            "extra": null,
+            "build": "IDLE"
+          },
+          "post": [
+            2,
+            0,
+            0,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 8,
+          "pre": [
+            2,
+            0,
+            0,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "G"
+            ],
+            "workMask": 1,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            0,
+            315,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 9,
+          "pre": [
+            2,
+            0,
+            315,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "GH"
+            ],
+            "workMask": 2,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            0,
+            735,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 10,
+          "pre": [
+            2,
+            0,
+            735,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "PH",
+              "P"
+            ],
+            "workMask": 12,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            0,
+            1365,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 11,
+          "pre": [
+            2,
+            0,
+            1365,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "PH",
+              "P"
+            ],
+            "workMask": 12,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            0,
+            1995,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 12,
+          "pre": [
+            2,
+            0,
+            1995,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "PH",
+              "P"
+            ],
+            "workMask": 12,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            0,
+            2625,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 13,
+          "pre": [
+            2,
+            0,
+            2625,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "PH",
+              "P"
+            ],
+            "workMask": 12,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            0,
+            3255,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 14,
+          "pre": [
+            2,
+            0,
+            3255,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "PH",
+              "P"
+            ],
+            "workMask": 12,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            0,
+            3885,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 15,
+          "pre": [
+            2,
+            0,
+            3885,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "PH",
+              "P"
+            ],
+            "workMask": 12,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            0,
+            4515,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 16,
+          "pre": [
+            2,
+            0,
+            4515,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "PH",
+              "P"
+            ],
+            "workMask": 12,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            0,
+            5145,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 17,
+          "pre": [
+            2,
+            0,
+            5145,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "PH",
+              "P"
+            ],
+            "workMask": 12,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            0,
+            5775,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 18,
+          "pre": [
+            2,
+            0,
+            5775,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "PH",
+              "P"
+            ],
+            "workMask": 12,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            0,
+            6405,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 19,
+          "pre": [
+            2,
+            0,
+            6405,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "PH",
+              "P"
+            ],
+            "workMask": 12,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            0,
+            7035,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 20,
+          "pre": [
+            2,
+            0,
+            7035,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "PH",
+              "P"
+            ],
+            "workMask": 12,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            0,
+            7665,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 21,
+          "pre": [
+            2,
+            0,
+            7665,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "PH",
+              "P"
+            ],
+            "workMask": 12,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            0,
+            8295,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 22,
+          "pre": [
+            2,
+            0,
+            8295,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "PH",
+              "P"
+            ],
+            "workMask": 12,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            0,
+            8925,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 23,
+          "pre": [
+            2,
+            0,
+            8925,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "PH",
+              "P"
+            ],
+            "workMask": 12,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            0,
+            9555,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 24,
+          "pre": [
+            2,
+            0,
+            9555,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "PH",
+              "P"
+            ],
+            "workMask": 12,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            0,
+            10185,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 25,
+          "pre": [
+            2,
+            0,
+            10185,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "PH",
+              "P"
+            ],
+            "workMask": 12,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            0,
+            10815,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 26,
+          "pre": [
+            2,
+            0,
+            10815,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "PH",
+              "P"
+            ],
+            "workMask": 12,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            0,
+            11445,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 27,
+          "pre": [
+            2,
+            0,
+            11445,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "PH",
+              "P"
+            ],
+            "workMask": 12,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            0,
+            12075,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 28,
+          "pre": [
+            2,
+            0,
+            12075,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "PH",
+              "P"
+            ],
+            "workMask": 12,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            0,
+            12705,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 29,
+          "pre": [
+            2,
+            0,
+            12705,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "PH",
+              "P"
+            ],
+            "workMask": 12,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            2,
+            0,
+            13335,
+            0
+          ],
+          "postPop3": false
+        },
+        {
+          "t": 30,
+          "pre": [
+            2,
+            0,
+            13335,
+            0
+          ],
+          "prePop3": false,
+          "action": {
+            "work": [
+              "PH",
+              "P"
+            ],
+            "workMask": 12,
+            "extra": null,
+            "build": "SETTLER"
+          },
+          "post": [
+            1,
+            0,
+            65,
+            1
+          ],
+          "postPop3": false
+        }
+      ]
+    }
+  },
+  "pop4SideCheck": {
+    "lastNonHelpingExact": {
+      "cost": 13860,
+      "horizon": 41,
+      "unrestrictedMaxPopSeen": 3,
+      "unrestrictedNAny": 29,
+      "unrestrictedNP3": 29,
+      "popBeyondCap3TransitionsBlocked": 0
+    },
+    "firstHelpingExact": {
+      "cost": 13861,
+      "horizon": 42,
+      "unrestrictedMaxPopSeen": 3,
+      "unrestrictedNAny": 29,
+      "unrestrictedNP3": 29,
+      "popBeyondCap3TransitionsBlocked": 0
+    }
+  },
+  "selfTest": {
+    "ok": true,
+    "failures": [],
+    "checks": "see failures list"
+  },
+  "elapsedSeconds": 152.545
+}
